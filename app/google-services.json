@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "519052703169",
+    "firebase_url": "https://atmdata-3e530.firebaseio.com",
+    "project_id": "atmdata-3e530",
+    "storage_bucket": "atmdata-3e530.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519052703169:android:9e12cb905549d24a",
+        "android_client_info": {
+          "package_name": "com.example.root.atmdata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519052703169-fs29rs9jtg1o6nhd6ulhnqrqme1ilmfi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBO9tsX5Cf9Zl5TLZ7SS89q5c2zm0Doxy8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
