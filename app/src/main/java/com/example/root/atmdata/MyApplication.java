@@ -7,7 +7,7 @@ import com.firebase.client.Firebase;
 /**
  * Created by root on 1/23/17.
  */
-public class AtmData extends Application {
+public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

@@ -1,60 +1,51 @@
 package com.example.root.atmdata;
 
-import android.support.v7.app.AppCompatActivity;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
-import com.firebase.client.Firebase;
+import com.example.root.atmdata.databinding.ActivityMainBinding;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+
 public class MainActivity extends AppCompatActivity {
-    private Button add_btn;
-    private EditText bankName;
-    private EditText bankAddress;
-    private EditText bankEmail;
+
     private String bankId;
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
+    private Bank bank = new Bank();
+    private ActivityMainBinding mainBinding;
 
-
-
+    private static final String TAG = "MainActivity";
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mainBinding.setBank(bank);
 
 
+        mFirebaseInstance = FirebaseDatabase.getInstance();
+        //get reference to 'bank'node
+        mFirebaseDatabase = mFirebaseInstance.getReference(Bank.FIREBASE_KEY);
 
-
-
-        add_btn=(Button)findViewById(R.id.add);
-        bankName=(EditText)findViewById(R.id.bank_name);
-        bankAddress=(EditText)findViewById(R.id.bank_address);
-        bankEmail=(EditText)findViewById(R.id.bank_email);
-
-        mFirebaseInstance=FirebaseDatabase.getInstance();
-        //get refrence to 'bank'node
-       mFirebaseDatabase=mFirebaseInstance.getReference("bank");
-        //store
-
-        add_btn.setOnClickListener(new View.OnClickListener() {
+        mainBinding.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name=bankName.getText().toString();
-                String address=bankAddress.getText().toString();
-                String email=bankEmail.getText().toString();
-
-
                 bankId = mFirebaseDatabase.push().getKey();
-
-                Bank bank = new Bank(name,address, email);
-
+                Log.d(TAG, "onClick: " + bank);
                 mFirebaseDatabase.child(bankId).setValue(bank);
+            }
+        });
 
-
+        mainBinding.clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bank = new Bank();
             }
         });
     }
