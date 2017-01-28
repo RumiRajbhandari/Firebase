@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         // this is change (2)
 
 
+        // this is test
         mFirebaseInstance = FirebaseDatabase.getInstance();
         //get reference to 'bank'node
         mFirebaseDatabase = mFirebaseInstance.getReference(Bank.FIREBASE_KEY);
