@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.setBank(bank);
+        // this is change
 
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
