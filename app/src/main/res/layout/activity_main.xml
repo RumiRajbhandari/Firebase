@@ -8,16 +8,19 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bank_name"
+        android:hint="lat"
+        android:id="@+id/lat"
         />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bank_address"/>
+        android:hint="lon"
+        android:id="@+id/lon"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bank_email"/>
+        android:hint="status"
+        android:id="@+id/status"/>
 
 
     <Button
@@ -25,5 +28,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/add"
         android:text="Add Text"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list"
+        android:text="List Elements"/>
 
 </LinearLayout>
