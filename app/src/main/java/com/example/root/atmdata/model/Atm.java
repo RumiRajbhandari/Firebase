@@ -1,4 +1,4 @@
-package com.example.root.atmdata;
+package com.example.root.atmdata.model;
 
 /**
  * Created by root on 2/5/17.
