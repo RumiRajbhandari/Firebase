@@ -2,17 +2,19 @@ package com.example.root.atmdata.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-
+import android.util.Log;
 import com.example.root.atmdata.R;
 import com.example.root.atmdata.base.BaseFragment;
 import com.example.root.atmdata.model.Bank;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
  * Use {@link android.support.v7.widget.RecyclerView} to list out {@link Bank}
  */
 public class BankListFragment extends BaseFragment {
+
 
     @Override
     public int layout() {
@@ -23,6 +25,10 @@ public class BankListFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // initialize recycler view
+
+        /*Calendar calendar = Calendar.getInstance();
+        calendar.getTimeInMillis();*/
+
     }
 
     @Override

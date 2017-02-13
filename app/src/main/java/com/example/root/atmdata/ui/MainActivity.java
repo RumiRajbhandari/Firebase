@@ -1,17 +1,23 @@
 package com.example.root.atmdata.ui;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 
+import com.example.root.atmdata.AtmDetails;
+import com.example.root.atmdata.util.BankListener;
 import com.example.root.atmdata.util.MyConstants;
 import com.example.root.atmdata.R;
 import com.example.root.atmdata.base.BaseActivity;
@@ -23,14 +29,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements ValueEventListener,
+public class
+MainActivity extends BaseActivity implements ValueEventListener,
         NavigationView.OnNavigationItemSelectedListener {
 
     private DatabaseReference mBankConnection;
     private FirebaseDatabase mFirebaseInstance;
+
+    BankListener bankListener;
+
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
@@ -60,8 +71,10 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
         mBankConnection = mFirebaseInstance.getReference("bank");
-       mBankConnection.addValueEventListener(this);
+        mBankConnection.addValueEventListener(this);
         navigationView.setNavigationItemSelectedListener(this);
+
+
     }
 
     @Override
@@ -98,8 +111,11 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
 
         List<Bank> bankList = new ArrayList<>();
 
+
         // initial looping for 0, 1, 2 ...
+
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//            Log.e(TAG, "snapshot before"+snapshot );
             Bank bank = new Bank();
             bank.setName((String) snapshot.child(MyConstants.KEY_NAME).getValue());
             bank.setAddress((String) snapshot.child(MyConstants.KEY_ADDRESS).getValue());
@@ -118,20 +134,32 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
                         .getValue().toString();
                 atm.setLat(Double.parseDouble(location.split(",")[0]));
                 atm.setLon(Double.parseDouble(location.split(",")[1]));
+                atm.setReference(atmsnapshot.getRef().toString());
                 atmList.add(atm);
             }
-
-            Log.e(TAG, bank.toString());
+            bank.setAtmlist(atmList);
 
             bankList.add(bank);
         }
 
-//        bankListener.onBankListUpdate(bankList);
+
+        int position = 1;
+        Bank ban = bankList.get(position);
+        List<Atm> atm = ban.getAtmlist();
+        Atm atm2 = atm.get(position);
+        Intent i = new Intent(this, AtmDetails.class);
+
+        String b = atm2.getReference();
+        i.putExtra("bank", b);
+        startActivity(i);
+
+
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
         // space for rent
     }
+
 
 }

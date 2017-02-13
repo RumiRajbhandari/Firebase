@@ -1,6 +1,7 @@
 package com.example.root.atmdata.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by root on 1/23/17.
@@ -12,29 +13,63 @@ public class Bank {
     private String head_office;
     private String opeing_hours;
     private String phone;
-//    private ArrayList<Atm> atmlist;
+    private String url;
 
-
-    public Bank(){
-
-    }
-
-    public Bank(String name, String address, String email, String head_office, String opeing_hours, String phone
-//            ,
-//                ArrayList<Atm> atmlist
-    ) {
+    public Bank(String name, String address, String email, String head_office, String opeing_hours, String phone, String url, List<Atm> atmlist) {
         this.name = name;
         this.address = address;
         this.email = email;
         this.head_office = head_office;
         this.opeing_hours = opeing_hours;
         this.phone = phone;
-//        this.atmlist = atmlist;
+        this.url = url;
+        this.atmlist = atmlist;
     }
 
-//    public ArrayList<Atm> getAtmlist() {
-//        return atmlist;
-//    }
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", head_office='" + head_office + '\'' +
+                ", opeing_hours='" + opeing_hours + '\'' +
+                ", phone='" + phone + '\'' +
+                ", url='" + url + '\'' +
+                ", atmlist=" + atmlist +
+                '}';
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setHead_office(String head_office) {
+        this.head_office = head_office;
+    }
+
+    public void setOpeing_hours(String opeing_hours) {
+        this.opeing_hours = opeing_hours;
+    }
+
+    public List<Atm> getAtmlist() {
+        return atmlist;
+    }
+
+    public void setAtmlist(List<Atm> atmlist) {
+        this.atmlist = atmlist;
+    }
+
+    private List<Atm> atmlist;
+//
+
+    public Bank(){
+
+    }
 
     public String getHead_office() {
         return head_office;
@@ -60,10 +95,6 @@ public class Bank {
         this.phone = phone;
     }
 
-//    public void setAtmlist(ArrayList<Atm> atmlist) {
-//        this.atmlist = atmlist;
-//    }
-
     public String getName() {
         return name;
     }
@@ -88,10 +119,4 @@ public class Bank {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "Bank{" +
-                "name='" + name + '\'' +
-                '}';
-    }
 }

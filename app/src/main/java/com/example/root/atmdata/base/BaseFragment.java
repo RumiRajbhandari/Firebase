@@ -3,6 +3,7 @@ package com.example.root.atmdata.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,8 @@ import java.util.List;
 
 public abstract class BaseFragment extends Fragment implements BankListener {
 
-    List<Bank> bankList;
+
+
 
     public abstract int layout();
 
@@ -31,7 +33,8 @@ public abstract class BaseFragment extends Fragment implements BankListener {
 
     @Override
     public void onBankListUpdate(List<Bank> bankList) {
-        this.bankList = bankList;
+
+        Log.e("rumi", "onBankListUpdate: "+bankList.toString() );
         refreshData(bankList);
     }
 

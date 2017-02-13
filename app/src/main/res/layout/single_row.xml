@@ -5,8 +5,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="List"/>
-
-
+        android:id="@+id/lat"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lon"/>
 
 </LinearLayout>

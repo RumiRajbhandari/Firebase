@@ -8,6 +8,7 @@ public class Atm {
     private Double lat;
     private Double lon;
     private Boolean status;
+    private String reference;
      public Atm(){
 
      }
@@ -16,6 +17,14 @@ public class Atm {
         this.lat = lat;
         this.lon = lon;
         this.status = status;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public Double getLat() {
@@ -40,5 +49,15 @@ public class Atm {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Atm{" +
+                "lat=" + lat +
+                ", lon=" + lon +
+                ", status=" + status +
+                ", reference='" + reference + '\'' +
+                '}';
     }
 }

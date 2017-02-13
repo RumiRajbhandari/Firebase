@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public interface BankListener {
+    List<Bank> bankList = null;
 
     void onBankListUpdate(List<Bank> bankList);
 }
