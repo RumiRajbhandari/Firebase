@@ -33,8 +33,6 @@ public abstract class BaseFragment extends Fragment implements BankListener {
 
     @Override
     public void onBankListUpdate(List<Bank> bankList) {
-
-        Log.e("rumi", "onBankListUpdate: "+bankList.toString() );
         refreshData(bankList);
     }
 

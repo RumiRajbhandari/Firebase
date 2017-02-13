@@ -28,6 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +43,9 @@ MainActivity extends BaseActivity implements ValueEventListener,
     private FirebaseDatabase mFirebaseInstance;
 
     BankListener bankListener;
+    String bankString;
+
+    List<Bank> bankList;
 
 
     private DrawerLayout drawerLayout;
@@ -77,22 +82,7 @@ MainActivity extends BaseActivity implements ValueEventListener,
 
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
-        switch (item.getItemId()) {
-            case R.id.navigation_bank:
-                fragment = new BankListFragment();
-                break;
-            case R.id.navigation_map:
-                fragment = new MapFragment();
-                break;
-        }
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment).commit();
-        drawerLayout.closeDrawer(Gravity.START);
-        return false;
-    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -109,7 +99,7 @@ MainActivity extends BaseActivity implements ValueEventListener,
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
 
-        List<Bank> bankList = new ArrayList<>();
+         bankList = new ArrayList<>();
 
 
         // initial looping for 0, 1, 2 ...
@@ -141,6 +131,11 @@ MainActivity extends BaseActivity implements ValueEventListener,
 
             bankList.add(bank);
         }
+        Log.e(TAG, "After fetching data" );
+        GsonBuilder builder=new GsonBuilder();
+        Gson gson=builder.create();
+         bankString=gson.toJson(bankList);
+
 
 
         int position = 1;
@@ -159,6 +154,25 @@ MainActivity extends BaseActivity implements ValueEventListener,
     @Override
     public void onCancelled(DatabaseError databaseError) {
         // space for rent
+    }
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        Log.e(TAG, "onNavigationItemSelected: " );
+        Fragment fragment = null;
+        switch (item.getItemId()) {
+            case R.id.navigation_bank:
+                getIntent().putExtra("rumi",bankString);
+
+                fragment = new BankListFragment();
+                break;
+            case R.id.navigation_map:
+                fragment = new MapFragment();
+                break;
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment).commit();
+        drawerLayout.closeDrawer(Gravity.START);
+        return false;
     }
 
 
