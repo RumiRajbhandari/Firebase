@@ -43,7 +43,7 @@ public class BankListFragment extends BaseFragment{
         // initialize recycler view
 
         Intent i=getActivity().getIntent();
-      aa=i.getStringExtra("rumi");
+      bankString=i.getStringExtra("rumi");
 //        Log.e(TAG, "Rajbhandari "+aa);
 //        Log.e(TAG, "After fetching data" );
         GsonBuilder builder=new GsonBuilder();
