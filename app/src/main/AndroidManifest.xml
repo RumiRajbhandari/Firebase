@@ -3,7 +3,6 @@
     package="com.example.root.atmdata" >
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -21,6 +20,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".AtmDetails"></activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
     </application>
 
 </manifest>

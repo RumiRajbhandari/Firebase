@@ -1,12 +1,13 @@
 package com.example.root.atmdata.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by root on 1/23/17.
  */
-public class Bank {
+public class Bank implements Serializable{
     private String name;
     private String address;
     private String email;
