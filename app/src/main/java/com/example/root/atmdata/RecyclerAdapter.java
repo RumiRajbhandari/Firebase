@@ -10,15 +10,21 @@ import android.widget.TextView;
 
 import com.example.root.atmdata.model.Bank;
 
+import java.util.List;
+
 /**
  * Created by root on 2/13/17.
  */
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder>{
-    Bank[] banks;
-    public RecyclerAdapter(Bank[] banks){
+    List<Bank> banks;
+    public RecyclerAdapter(List<Bank> banks){
         this.banks=banks;
 
+    }
+    public void setBanks(List<Bank> bankList){
+        banks=bankList;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -30,14 +36,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
     @Override
     public void onBindViewHolder(RecyclerAdapter.RecyclerViewHolder holder, int position) {
-        Log.e(":TAG.......", "onBindViewHolder: "+banks[position].getName() );
-        holder.tx_name.setText(banks[position].getName());
+        Log.e(":TAG.......", "onBindViewHolder: "+banks.get(position).getName() );
+        holder.tx_name.setText(banks.get(position).getName());
 
     }
 
     @Override
     public int getItemCount() {
-        return banks.length;
+        return banks.size();
     }
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {

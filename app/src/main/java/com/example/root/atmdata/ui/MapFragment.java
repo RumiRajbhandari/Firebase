@@ -2,6 +2,7 @@ package com.example.root.atmdata.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.example.root.atmdata.R;
 import com.example.root.atmdata.base.BaseFragment;
@@ -14,6 +15,12 @@ import java.util.List;
  * Plot {@link Atm} into map
  */
 public class MapFragment extends BaseFragment {
+    private List<Bank> bankList;
+    public static MapFragment newInstance(List<Bank> bankList){
+        MapFragment mapFragment=new MapFragment();
+        mapFragment.bankList=bankList;
+        return mapFragment;
+    }
 
     @Override
     public int layout() {
@@ -27,8 +34,12 @@ public class MapFragment extends BaseFragment {
     }
 
     @Override
-    public void onBankListUpdate(List<Bank> bankList) {
-        super.onBankListUpdate(bankList);
-        // collect atm list detail and plot it into map
+    public Fragment getFragment() {
+        return this;
+    }
+
+    @Override
+    public void refreshData(List<Bank> bankList) {
+    // Remove all markers and plot new markers
     }
 }

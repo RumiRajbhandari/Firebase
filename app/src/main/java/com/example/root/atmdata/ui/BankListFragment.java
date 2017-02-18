@@ -3,6 +3,7 @@ package com.example.root.atmdata.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,10 +26,16 @@ import static android.content.ContentValues.TAG;
  */
 public class BankListFragment extends BaseFragment{
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private RecyclerAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    public static BankListFragment newInstance(List<Bank> bankList){
+        BankListFragment bankListFragment=new BankListFragment();
+        bankListFragment.bankList=bankList;
+        return bankListFragment;
 
+    }
 
+    private List<Bank> bankList;
     String bankString;
 
 
@@ -38,18 +45,15 @@ public class BankListFragment extends BaseFragment{
     }
 
     @Override
+    public Fragment getFragment() {
+            return this;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // initialize recycler view
 
-        Intent i=getActivity().getIntent();
-      bankString=i.getStringExtra("rumi");
-//        Log.e(TAG, "Rajbhandari "+aa);
-//        Log.e(TAG, "After fetching data" );
-        GsonBuilder builder=new GsonBuilder();
-        Gson gson=builder.create();
-        Bank[] bankList=gson.fromJson(bankString,Bank[].class);
-        Log.e(TAG, "Raj........"+bankList[0].toString() );
         /*Calendar calendar = Calendar.getInstance();
         calendar.getTimeInMillis();*/
 //        Log.e("TAG", "Bank list is "+bankList.get(1).toString());
@@ -67,6 +71,8 @@ public class BankListFragment extends BaseFragment{
 
     @Override
     public void refreshData(List<Bank> bankList) {
+        Log.d(TAG, "refreshData() called with: bankList = [" + bankList + "]");
         // show bank list in recycler view
+        adapter.setBanks(bankList);
     }
 }

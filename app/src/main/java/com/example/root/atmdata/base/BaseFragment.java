@@ -36,7 +36,5 @@ public abstract class BaseFragment extends Fragment implements BankListener {
         refreshData(bankList);
     }
 
-    public void refreshData(List<Bank> bankList) {
-
-    }
+    public abstract void refreshData(List<Bank> bankList);
 }

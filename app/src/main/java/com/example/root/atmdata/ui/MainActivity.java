@@ -42,10 +42,12 @@ MainActivity extends BaseActivity implements ValueEventListener,
     private DatabaseReference mBankConnection;
     private FirebaseDatabase mFirebaseInstance;
 
+
+
     BankListener bankListener;
     String bankString;
 
-    List<Bank> bankList;
+    List<Bank> bankList=new ArrayList<>();
 
 
     private DrawerLayout drawerLayout;
@@ -78,6 +80,8 @@ MainActivity extends BaseActivity implements ValueEventListener,
         mBankConnection = mFirebaseInstance.getReference("bank");
         mBankConnection.addValueEventListener(this);
         navigationView.setNavigationItemSelectedListener(this);
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+
 
 
     }
@@ -144,9 +148,11 @@ MainActivity extends BaseActivity implements ValueEventListener,
         Atm atm2 = atm.get(position);
         Intent i = new Intent(this, AtmDetails.class);
 
-        String b = atm2.getReference();
-        i.putExtra("bank", b);
-        startActivity(i);
+//        String b = atm2.getReference();
+//        i.putExtra("bank", b);
+//        startActivity(i);
+
+            bankListener.onBankListUpdate(bankList);
 
 
     }
@@ -158,20 +164,21 @@ MainActivity extends BaseActivity implements ValueEventListener,
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 //        Log.e(TAG, "onNavigationItemSelected: " );
-        Fragment fragment = null;
+
         switch (item.getItemId()) {
             case R.id.navigation_bank:
-                getIntent().putExtra("rumi",bankString);
+                bankListener=BankListFragment.newInstance(bankList);
 
-                fragment = new BankListFragment();
                 break;
             case R.id.navigation_map:
-                fragment = new MapFragment();
+                bankListener=MapFragment.newInstance(bankList);
+
                 break;
         }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment).commit();
+                .replace(R.id.container, bankListener.getFragment()).commit();
         drawerLayout.closeDrawer(Gravity.START);
+        item.setChecked(true);
         return false;
     }
 
