@@ -1,11 +1,13 @@
 package com.example.root.atmdata;
 
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.root.atmdata.model.Bank;
@@ -17,7 +19,7 @@ import java.util.List;
  */
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder>{
-    List<Bank> banks;
+     public  List<Bank> banks;
     public RecyclerAdapter(List<Bank> banks){
         this.banks=banks;
 
@@ -45,13 +47,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public int getItemCount() {
         return banks.size();
     }
-    public static class RecyclerViewHolder extends RecyclerView.ViewHolder
+    public  class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
+        LinearLayout linearLayout;
         TextView tx_name;
 
         public RecyclerViewHolder(View view){
             super(view);
+            linearLayout=(LinearLayout)view.findViewById(R.id.container);
             tx_name=(TextView)view.findViewById(R.id.name);
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    banks.get(getAdapterPosition());
+                    //TODO send to atm details
+                }
+            });
 
         }
     }

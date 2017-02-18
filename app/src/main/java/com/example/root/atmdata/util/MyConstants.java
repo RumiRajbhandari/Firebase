@@ -15,4 +15,6 @@ public class MyConstants {
     public static final String KEY_OPENING_HOURS = "opening_hours";
     public static final String KEY_PHONE = "phone";
     public static final String KEY_URL="url";
+    public static final String KEY_STATUS="status";
+    public static final String KEY_STATUS_UPDATE_TIME="status_update_time";
 }
