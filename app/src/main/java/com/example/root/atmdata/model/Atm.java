@@ -1,12 +1,14 @@
 package com.example.root.atmdata.model;
 
+import java.io.Serializable;
+
 /**
  * Created by root on 2/5/17.
  */
 
-public class Atm {
-    private Double lat;
-    private Double lon;
+public class Atm implements Serializable{
+    private Double lat = Double.MIN_NORMAL;
+    private Double lon = Double.MIN_NORMAL;
     private Boolean status;
     private String reference;
      public Atm(){
