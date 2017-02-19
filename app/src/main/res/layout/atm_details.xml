@@ -44,12 +44,7 @@
                 android:src="@drawable/mail" />
 
             <!--todo remove the edit option here-->
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:onClick="edit"
-                android:src="@drawable/edit" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -62,13 +57,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Email: "
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -86,7 +81,7 @@
                 android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -98,13 +93,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Opening hour: "
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/opening_hour"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -116,16 +111,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Head Office: "
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <TextView
-                android:id="@+id/headOffice"
+                android:id="@+id/head_office"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
         <!-- todo add a small label on top-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Atm List"
+            android:textSize="20dp"/>
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"

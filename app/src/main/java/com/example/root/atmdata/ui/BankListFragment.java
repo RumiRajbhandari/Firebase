@@ -1,6 +1,5 @@
 package com.example.root.atmdata.ui;
 
-import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
