@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.text.InputType;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,34 +20,26 @@ import android.widget.TextView;
 import com.example.root.atmdata.base.BaseActivity;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
-import com.example.root.atmdata.util.MyConstants;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.util.HashMap;
 
 /**
  * Created by root on 2/13/17.
  */
 
 public class AtmDetails extends BaseActivity {
-    Atm atm;
 
-    Bank bank;
-    TextView bankName, phone, email, openingHour, headOffice;
-    ImageView image;
-    SharedPreferences sharedPreferences,sharedPreferences2;
+    private Atm atm;
+    private Bank bank;
+    private TextView bankName, phone, email, openingHour, headOffice;
+    private ImageView image;
+    // only use one shared preference
+    private SharedPreferences sharedPreferences;
 
     @Override
     public int layout() {
@@ -66,14 +57,13 @@ public class AtmDetails extends BaseActivity {
         headOffice = (TextView) findViewById(R.id.head_office);
         image = (ImageView) findViewById(R.id.image);
 
-        Intent i = getIntent();
-        bank = (Bank) i.getSerializableExtra("bank");
+        bank = (Bank) getIntent().getSerializableExtra(Bank.EXTRA_KEY);
 
         bankName.setText(bank.getName());
         phone.setText(bank.getPhone());
         email.setText(bank.getEmail());
-        headOffice.setText(bank.getHead_office());
-        openingHour.setText(bank.getOpeing_hours());
+        headOffice.setText(bank.getHeadOffice());
+        openingHour.setText(bank.getOpeningHours());
         Picasso.with(this)
                 .load(bank.getUrl())
                 .into(image);
@@ -84,42 +74,42 @@ public class AtmDetails extends BaseActivity {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                for (Atm atm : bank.getAtmlist()) {
+                for (Atm atm : bank.getAtmList()) {
                     MarkerOptions options = new MarkerOptions();
                     options.title(bank.getName() + " atm");
                     options.icon(BitmapDescriptorFactory
                             .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                    options.position(new LatLng(atm.getLat(), atm.getLon()));
+                    options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
                     googleMap.addMarker(options);
                 }
             }
         });
     }
 
-    public void call(View view){
+    public void call(View view) {
 
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:9849829387"));
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            startActivity(callIntent);
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:9849829387"));
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        startActivity(callIntent);
     }
 
-    public void edit(View view){
+    public void edit(View view) {
 
-        sharedPreferences=getSharedPreferences("AtmData",Context.MODE_PRIVATE);
-        String na=sharedPreferences.getString("name","");
-        Log.e("TAg", "edit:.........."+na );
-        if(na.isEmpty()){
-            final EditText editText=new EditText(this);
+        sharedPreferences = getSharedPreferences("AtmData", Context.MODE_PRIVATE);
+        String na = sharedPreferences.getString("name", "");
+        Log.e("TAg", "edit:.........." + na);
+        if (na.isEmpty()) {
+            final EditText editText = new EditText(this);
             editText.setInputType(InputType.TYPE_CLASS_TEXT);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -131,12 +121,12 @@ public class AtmDetails extends BaseActivity {
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    String userName=editText.getText().toString();
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
-                    editor.putString("name",userName);
+                    String userName = editText.getText().toString();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("name", userName);
                     editor.commit();
 
-                    Log.e("TAG", "onClick: "+userName );
+                    Log.e("TAG", "onClick: " + userName);
 
                 }
             });
@@ -153,10 +143,10 @@ public class AtmDetails extends BaseActivity {
             dialog.show();
 
         }
-       // sharedPreferences2=getSharedPreferences("AtmData",Context.MODE_PRIVATE);
-        String na2=sharedPreferences.getString("name","");
-        Log.e("TAG2", "edit: "+na2 );
-        if(!na2.isEmpty()){
+        // sharedPreferences2=getSharedPreferences("AtmData",Context.MODE_PRIVATE);
+        String na2 = sharedPreferences.getString("name", "");
+        Log.e("TAG2", "edit: " + na2);
+        if (!na2.isEmpty()) {
             AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
 
 
@@ -181,11 +171,10 @@ public class AtmDetails extends BaseActivity {
             dialog.show();
 
 
-
-
         }
-        Log.e("TAG", "edit:..... "+atm.toString() );
+        Log.e("TAG", "edit:..... " + atm.toString());
 
 
-}}
+    }
+}
 

@@ -1,44 +1,37 @@
 package com.example.root.atmdata.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by root on 1/23/17.
  */
-public class Bank implements Serializable{
+public class Bank implements Serializable {
+
+    public static final String EXTRA_KEY = "bank";
+
     private String name;
     private String address;
     private String email;
-    private String head_office;
-    private String opeing_hours;
+    private String headOffice;
+    private String openingHours;
     private String phone;
     private String url;
+    private List<Atm> atmList;
 
-    public Bank(String name, String address, String email, String head_office, String opeing_hours, String phone, String url, List<Atm> atmlist) {
+    public Bank() {
+    }
+
+    public Bank(String name, String address, String email, String headOffice, String openingHours,
+                String phone, String url, List<Atm> atmList) {
         this.name = name;
         this.address = address;
         this.email = email;
-        this.head_office = head_office;
-        this.opeing_hours = opeing_hours;
+        this.headOffice = headOffice;
+        this.openingHours = openingHours;
         this.phone = phone;
         this.url = url;
-        this.atmlist = atmlist;
-    }
-
-    @Override
-    public String toString() {
-        return "Bank{" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", email='" + email + '\'' +
-                ", head_office='" + head_office + '\'' +
-                ", opeing_hours='" + opeing_hours + '\'' +
-                ", phone='" + phone + '\'' +
-                ", url='" + url + '\'' +
-                ", atmlist=" + atmlist +
-                '}';
+        this.atmList = atmList;
     }
 
     public String getUrl() {
@@ -49,43 +42,28 @@ public class Bank implements Serializable{
         this.url = url;
     }
 
-    public void setHead_office(String head_office) {
-        this.head_office = head_office;
+    public void setHeadOffice(String headOffice) {
+        this.headOffice = headOffice;
     }
 
-    public void setOpeing_hours(String opeing_hours) {
-        this.opeing_hours = opeing_hours;
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
     }
 
-    public List<Atm> getAtmlist() {
-        return atmlist;
+    public List<Atm> getAtmList() {
+        return atmList;
     }
 
-    public void setAtmlist(List<Atm> atmlist) {
-        this.atmlist = atmlist;
+    public void setAtmList(List<Atm> atmList) {
+        this.atmList = atmList;
     }
 
-    private List<Atm> atmlist;
-//
-
-    public Bank(){
-
+    public String getHeadOffice() {
+        return headOffice;
     }
 
-    public String getHead_office() {
-        return head_office;
-    }
-
-    public void setHeadOffice(String head_office) {
-        this.head_office = head_office;
-    }
-
-    public String getOpeing_hours() {
-        return opeing_hours;
-    }
-
-    public void setOpeningHours(String opeing_hours) {
-        this.opeing_hours = opeing_hours;
+    public String getOpeningHours() {
+        return openingHours;
     }
 
     public String getPhone() {
@@ -118,6 +96,20 @@ public class Bank implements Serializable{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", headOffice='" + headOffice + '\'' +
+                ", openingHours='" + openingHours + '\'' +
+                ", phone='" + phone + '\'' +
+                ", url='" + url + '\'' +
+                ", atmList=" + atmList +
+                '}';
     }
 
 }

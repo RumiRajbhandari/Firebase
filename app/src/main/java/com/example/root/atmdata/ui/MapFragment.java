@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.root.atmdata.AtmDetails;
 import com.example.root.atmdata.R;
@@ -71,14 +70,14 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
             // remove markers if there
 
             for (final Bank bank : bankList) {
-                if(bank.getAtmlist() != null && !bank.getAtmlist().isEmpty())
-                for (Atm atm : bank.getAtmlist()) {
-                    if(atm.getLat() != Double.MIN_NORMAL) {
+                if(bank.getAtmList() != null && !bank.getAtmList().isEmpty())
+                for (Atm atm : bank.getAtmList()) {
+                    if(atm.getLatitude() != Double.MIN_NORMAL) {
                         MarkerOptions options = new MarkerOptions();
                         options.title(bank.getName() + " atm");
                         options.icon(BitmapDescriptorFactory
                                 .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                        options.position(new LatLng(atm.getLat(), atm.getLon()));
+                        options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
                         Marker marker = googleMap.addMarker(options);
                         bankMap.put(marker.getId(), bank);
                         markerList.add(marker);

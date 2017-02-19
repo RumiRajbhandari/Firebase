@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 
-
+// TODO: 2/19/17 remove class
 public class Main2Activity extends AppCompatActivity {
     SharedPreferences sharedpreferences;
 
@@ -14,10 +14,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
-
         sharedpreferences = getSharedPreferences("AtmDataPreference", Context.MODE_PRIVATE);
-        sharedpreferences.getString("username",null);
-
+        sharedpreferences.getString("username", null);
     }
 }

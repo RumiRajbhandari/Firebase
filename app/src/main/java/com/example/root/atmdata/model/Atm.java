@@ -6,18 +6,21 @@ import java.io.Serializable;
  * Created by root on 2/5/17.
  */
 
-public class Atm implements Serializable{
-    private Double lat = Double.MIN_NORMAL;
-    private Double lon = Double.MIN_NORMAL;
+public class Atm implements Serializable {
+
+    // assign default values to latitude, longitude
+    private Double latitude = Double.MIN_NORMAL;
+    private Double longitude = Double.MIN_NORMAL;
     private String status;
     private String reference;
-     public Atm(){
 
-     }
+    public Atm() {
 
-    public Atm(Double lat, Double lon, String status) {
-        this.lat = lat;
-        this.lon = lon;
+    }
+
+    public Atm(Double latitude, Double longitude, String status) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.status = status;
     }
 
@@ -29,24 +32,24 @@ public class Atm implements Serializable{
         this.reference = reference;
     }
 
-    public Double getLat() {
-        return lat;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public Double getLon() {
-        return lon;
+    public Double getLongitude() {
+        return longitude;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public void setLon(Double lon) {
-        this.lon = lon;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     public void setStatus(String status) {
@@ -56,8 +59,8 @@ public class Atm implements Serializable{
     @Override
     public String toString() {
         return "Atm{" +
-                "lat=" + lat +
-                ", lon=" + lon +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
                 ", status=" + status +
                 ", reference='" + reference + '\'' +
                 '}';
