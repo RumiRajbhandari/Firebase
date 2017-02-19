@@ -9,13 +9,13 @@ import java.io.Serializable;
 public class Atm implements Serializable{
     private Double lat = Double.MIN_NORMAL;
     private Double lon = Double.MIN_NORMAL;
-    private Boolean status;
+    private String status;
     private String reference;
      public Atm(){
 
      }
 
-    public Atm(Double lat, Double lon, Boolean status) {
+    public Atm(Double lat, Double lon, String status) {
         this.lat = lat;
         this.lon = lon;
         this.status = status;
@@ -37,7 +37,7 @@ public class Atm implements Serializable{
         return lon;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -49,7 +49,7 @@ public class Atm implements Serializable{
         this.lon = lon;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

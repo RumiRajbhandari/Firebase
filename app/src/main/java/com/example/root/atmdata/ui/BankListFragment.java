@@ -59,7 +59,7 @@ public class BankListFragment extends BaseFragment{
 //        Log.e("TAG", "Bank list is "+bankList.get(1).toString());
 
         recyclerView=(RecyclerView) getActivity().findViewById(R.id.recycler_view);
-        adapter=new RecyclerAdapter(bankList);
+        adapter=new RecyclerAdapter(bankList,getContext());
 
         layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);

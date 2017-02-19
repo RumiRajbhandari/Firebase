@@ -117,6 +117,7 @@
                         .getValue());
                 bank.setOpeningHours((String) snapshot.child(MyConstants.KEY_OPENING_HOURS)
                         .getValue());
+                bank.setUrl((String)snapshot.child(MyConstants.KEY_URL).getValue());
 
                 List<Atm> atmList = new ArrayList<>();
                 // looping for atm 0, 1, 2 ...

@@ -4,14 +4,17 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,10 +43,12 @@ import java.util.HashMap;
  */
 
 public class AtmDetails extends BaseActivity {
+    Atm atm;
 
     Bank bank;
     TextView bankName, phone, email, openingHour, headOffice;
     ImageView image;
+    SharedPreferences sharedPreferences,sharedPreferences2;
 
     @Override
     public int layout() {
@@ -109,30 +114,78 @@ public class AtmDetails extends BaseActivity {
     }
 
     public void edit(View view){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        sharedPreferences=getSharedPreferences("AtmData",Context.MODE_PRIVATE);
+        String na=sharedPreferences.getString("name","");
+        Log.e("TAg", "edit:.........."+na );
+        if(na.isEmpty()){
+            final EditText editText=new EditText(this);
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 
 // 2. Chain together various setter methods to set the dialog characteristics
-        builder.setMessage("Please set the status")
-                .setTitle("Status update");
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            builder.setMessage("Please set the status")
+                    .setTitle("Please Enter your name")
+                    .setView(editText);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    String userName=editText.getText().toString();
+                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor.putString("name",userName);
+                    editor.commit();
 
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+                    Log.e("TAG", "onClick: "+userName );
 
-            }
-        });
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+
 
 // 3. Get the AlertDialog from create()
-                AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        }
+       // sharedPreferences2=getSharedPreferences("AtmData",Context.MODE_PRIVATE);
+        String na2=sharedPreferences.getString("name","");
+        Log.e("TAG2", "edit: "+na2 );
+        if(!na2.isEmpty()){
+            AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
 
 
-}
+// 2. Chain together various setter methods to set the dialog characteristics
+            builder2.setMessage("Please set the status")
+                    .setTitle("Status update");
+            builder2.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+
+// 3. Get the AlertDialog from create()
+            AlertDialog dialog = builder2.create();
+            dialog.show();
+
+
+
+
+        }
+        Log.e("TAG", "edit:..... "+atm.toString() );
+
+
+}}
 
