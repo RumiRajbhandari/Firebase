@@ -17,12 +17,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.root.atmdata.AtmDetails;
 import com.example.root.atmdata.R;
 import com.example.root.atmdata.base.BaseFragment;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
+import com.firebase.client.core.view.View;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +42,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.location.LocationManager.NETWORK_PROVIDER;
+import static android.widget.TextView.*;
+import static com.example.root.atmdata.R.id.container;
 import static com.google.android.gms.internal.zzs.TAG;
 
 /**
@@ -65,6 +72,35 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
     @Override
     public int layout() {
         return R.layout.fragment_map;
+        GoogleMap.setInfoWindowAdapter(Yourcustominfowindowadpater){
+            class Yourcustominfowindowadpater implements GoogleMap.InfoWindowAdapter {
+                private final View mymarkerview;
+
+                Yourcustominfowindowadpater() {
+                    mymarkerview = getLayoutInflater().inflate(R.layout.custominfowindow, null);
+                }
+
+                public View getInfoWindow(Marker arg0) {
+                    render(markerList, mymarkerview);
+                    return mymarkerview;
+                }
+
+                public View getInfoContents(Marker argo) {
+                    View v = getLayoutInflater().inflate(R.layout.custominfowindow, null);
+                    TextView status  = (TextView)v.findViewById(R.id.status);
+                    View view = inflater.inflate(R.layout.custominfowindow, container, false);
+                    ImageView imageView = (ImageView) v.findViewById(R.id.edit);
+                    return v;
+
+                }
+
+                private void render(List<Marker> markerList, View view) {
+                    // Add the code to set the required values
+                    // for each element in your custominfowindow layout file
+                }
+            }
+
+        }
     }
 
     @Override
@@ -80,37 +116,38 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            lm.requestLocationUpdates(lm.NETWORK_PROVIDER, 0, 0, ll);
-        googleMap.setMyLocationEnabled(true);
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+      //  if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+           // lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, ll);
+       // }
+       // googleMap.setMyLocationEnabled(true);
+       // if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
 
-            return;
-        }
-        Criteria criteria = new Criteria();
+           // return;
+       // }
+      //  Criteria criteria = new Criteria();
 
         // Getting the name of the best provider
-        String provider = lm.getBestProvider(criteria, true);
+       // String provider = lm.getBestProvider(criteria, true);
 
         // Getting Current Location
-        Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+       // Location location = lm.getLastKnownLocation(NETWORK_PROVIDER);
 
-        if (location != null) {
+       // if (location != null) {
             // Getting latitude of the current location
-            double latitude = location.getLatitude();
+          //  double latitude = location.getLatitude();
 
             // Getting longitude of the current location
-            double longitude = location.getLongitude();
+           // double longitude = location.getLongitude();
 
             // Creating a LatLng object for the current location
-            LatLng latLng = new LatLng(latitude, longitude);
+           // LatLng latLng = new LatLng(latitude, longitude);
 
-            googleMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+           // googleMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
+           // googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
             plotAtmList(bankList);
         }
-    }
+   // }
 
    // private static final String TAG = "MapFragment";
 
@@ -133,7 +170,30 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
                         bankMap.put(marker.getId(), bank);
                         markerList.add(marker);
 
-                        googleMap.setOnInfoWindowClickListener(this);
+                            MarkerOptions options = new MarkerOptions();
+                            options.title(bank.getName() + " atm");
+                            options.icon(BitmapDescriptorFactory
+                                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                            options.position(new LatLng(atm.getLat(), atm.getLon()));
+                            Marker marker = googleMap.addMarker(options);
+                            bankMap.put(marker.getId(), bank);
+                            markerList.add(marker);
+
+                            googleMap.setOnInfoWindowClickListener(this);
+                        }
+                        else{
+                            MarkerOptions options = new MarkerOptions();
+                            options.title(bank.getName() + " atm");
+                            options.icon(BitmapDescriptorFactory
+                                    .defaultMarker(BitmapDescriptorFactory.HUE_RED ));
+                            options.position(new LatLng(atm.getLat(), atm.getLon()));
+                            Marker marker = googleMap.addMarker(options);
+                            bankMap.put(marker.getId(), bank);
+                            markerList.add(marker);
+
+                            googleMap.setOnInfoWindowClickListener(this);
+
+                        }
                     }
                 }
             }
@@ -144,7 +204,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
     public void onInfoWindowClick(Marker marker) {
         if(bankMap.get(marker.getId()) != null) {
             Intent intent = new Intent(getActivity(), AtmDetails.class);
-            intent.putExtra("bank", bankMap.get(marker.getId()));
+            intent.putExtra("bank", (Serializable) bankMap.get(marker.getId()));
             startActivity(intent);
         }
     }
