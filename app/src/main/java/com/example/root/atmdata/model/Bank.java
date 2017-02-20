@@ -1,7 +1,9 @@
 package com.example.root.atmdata.model;
 
+
 import java.io.Serializable;
 import java.util.List;
+import android.databinding.BaseObservable;
 
 /**
  * Created by root on 1/23/17.
@@ -9,6 +11,7 @@ import java.util.List;
 public class Bank implements Serializable {
 
     public static final String EXTRA_KEY = "bank";
+
 
     private String name;
     private String address;

@@ -2,6 +2,7 @@ package com.example.root.atmdata;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +11,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.root.atmdata.databinding.BankListBinding;
+
 import com.example.root.atmdata.model.Bank;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.List;
+
 
 /**
  * Created by root on 2/13/17.
@@ -37,17 +41,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row, parent, false);
-        return new RecyclerViewHolder(view);
+        /*View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row, parent, false);
+        return new RecyclerViewHolder(view);*/
+
+        BankListBinding binding= DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.single_row,parent,false);
+        return new RecyclerViewHolder(binding);
+
     }
 
     @Override
-    public void onBindViewHolder(RecyclerAdapter.RecyclerViewHolder holder, int position) {
-        holder.bankName.setText(bankList.get(position).getName());
+    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
+       /* holder.bankName.setText(bankList.get(position).getName());
         holder.bankPhone.setText(bankList.get(position).getPhone());
         Picasso.with(context)
                 .load(bankList.get(position).getUrl())
-                .into(holder.bankImage);
+                .into(holder.bankImage);*/
+       holder.getBinding().setVariable(com.example.root.atmdata.BR.Bank,bankList.get(position));
+
+
+        holder.getBinding().executePendingBindings();
     }
 
     @Override
@@ -57,14 +69,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
+        BankListBinding mbinding;
+/*
+
         RelativeLayout container;
         TextView bankName;
         TextView bankPhone;
         ImageView bankImage;
+*/
 
-        public RecyclerViewHolder(View view) {
-            super(view);
+        public RecyclerViewHolder(BankListBinding binding) {
+           super(binding.getRoot());
+           mbinding=binding;
+            mbinding.executePendingBindings();
             // TODO: 2/19/17 maybe use butter knife or data binding
+
+/*
             container = (RelativeLayout) view.findViewById(R.id.row);
             bankName = (TextView) view.findViewById(R.id.name);
             bankPhone = (TextView) view.findViewById(R.id.phone);
@@ -76,8 +96,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                     intent.putExtra(Bank.EXTRA_KEY, bankList.get(getAdapterPosition()));
                     context.startActivity(intent);
                 }
-            });
+            });*/
 
+        }
+        public BankListBinding getBinding(){
+            return mbinding;
         }
     }
 }

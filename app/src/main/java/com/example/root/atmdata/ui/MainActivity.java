@@ -43,6 +43,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
     private FirebaseDatabase database;
     private DatabaseReference bankReference;
 
+
     private static final String TAG = "MainActivity";
 
     @Override
@@ -136,6 +137,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         switch (item.getItemId()) {
             case R.id.navigation_bank:
                 bankListener = BankListFragment.newInstance(bankList);
+
                 break;
             case R.id.navigation_map:
                 bankListener = MapFragment.newInstance(bankList);
