@@ -19,9 +19,6 @@ import java.util.List;
 
 public abstract class BaseFragment extends Fragment implements BankListener {
 
-
-
-
     public abstract int layout();
 
     @Nullable

@@ -31,9 +31,9 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by root on 2/13/17.
  */
-
 public class AtmDetails extends BaseActivity {
 
+    // using data binding here would be more fruitful
     private Atm atm;
     private Bank bank;
     private TextView bankName, phone, email, openingHour, headOffice;
@@ -105,6 +105,7 @@ public class AtmDetails extends BaseActivity {
 
     public void edit(View view) {
 
+        // move variables to MyConstants
         sharedPreferences = getSharedPreferences("AtmData", Context.MODE_PRIVATE);
         String na = sharedPreferences.getString("name", "");
         Log.e("TAg", "edit:.........." + na);
@@ -113,8 +114,7 @@ public class AtmDetails extends BaseActivity {
             editText.setInputType(InputType.TYPE_CLASS_TEXT);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-
-// 2. Chain together various setter methods to set the dialog characteristics
+            // 2. Chain together various setter methods to set the dialog characteristics
             builder.setMessage("Please set the status")
                     .setTitle("Please Enter your name")
                     .setView(editText);
@@ -124,10 +124,9 @@ public class AtmDetails extends BaseActivity {
                     String userName = editText.getText().toString();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("name", userName);
-                    editor.commit();
-
+                    editor.apply();
                     Log.e("TAG", "onClick: " + userName);
-
+                    // todo also update ATM status
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -137,44 +136,34 @@ public class AtmDetails extends BaseActivity {
                 }
             });
 
-
-// 3. Get the AlertDialog from create()
+            // 3. Get the AlertDialog from create()
             AlertDialog dialog = builder.create();
             dialog.show();
 
         }
-        // sharedPreferences2=getSharedPreferences("AtmData",Context.MODE_PRIVATE);
-        String na2 = sharedPreferences.getString("name", "");
-        Log.e("TAG2", "edit: " + na2);
-        if (!na2.isEmpty()) {
-            AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-
-
-// 2. Chain together various setter methods to set the dialog characteristics
-            builder2.setMessage("Please set the status")
+        // rather than initializing another variable, use else
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            // 2. Chain together various setter methods to set the dialog characteristics
+            builder.setMessage("Please set the status")
                     .setTitle("Status update");
-            builder2.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // todo update atm status
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
                 }
             });
-            builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
 
-                }
-            });
-
-// 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder2.create();
+            // 3. Get the AlertDialog from create()
+            AlertDialog dialog = builder.create();
             dialog.show();
-
-
         }
-        Log.e("TAG", "edit:..... " + atm.toString());
-
-
     }
 }
 

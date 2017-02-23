@@ -1,20 +1,57 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
-<data class="BankListBinding"></data>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!-- Always have your xml namespaces(xmlns:android, xmlns:tools, xmlns:app) declared above in the -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <data class="BankListBinding"></data>
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <!--
+            Here we can
+            1) initialize the recycler view via data binding,
+                            OR
+            We can just
+            2) use data binding to get reference of the view ids in our layout
+
+            If we are going for 1), we must create a custom attribute and use the @BindingAdapter
+            annotation where we can add our logic to initialize our RecyclerView, also please check
+             {@link BindingUtil}
+
+            If we are going for 2), nothing else is to be done
+     -->
+    <data class="BankListBinding">
+
+        <!-- If we are going for case 1) add a bank list variable-->
+        <!--<import type="com.example.root.atmdata.model.Bank" />-->
+        <!--<import type="java.util.List" />-->
+
+        <!--<variable-->
+        <!--name="bankList"-->
+        <!--type="List&lt;Bank&gt;" />-->
+
+        <!--<variable-->
+        <!--name="adapter"-->
+        <!--type="com.example.root.atmdata.RecyclerAdapter" />-->
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/single_row">
+        android:orientation="vertical">
 
-    </android.support.v7.widget.RecyclerView>
-</LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/single_row" />
+
+        <!-- if going for case 1) -->
+        <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/recycler_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:scrollbars="vertical"-->
+        <!--app:bank_list="@{bankList}"-->
+        <!--app:list_adapter="@{adapter}"-->
+        <!--tools:listitem="@layout/single_row" />-->
+
+    </LinearLayout>
 </layout>

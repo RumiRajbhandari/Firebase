@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
+    <data class="BankItemBinding">
 
         <variable
-            name="Bank"
+            name="bank"
             type="com.example.root.atmdata.model.Bank" />
     </data>
+
     <RelativeLayout
+        android:id="@+id/row"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/row">
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:imageUrl="@{Bank.url}"
+        android:layout_height="wrap_content">
 
-        android:id="@+id/imageView"
-        tools:src="@android:drawable/ic_menu_close_clear_cancel"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/name"
-        android:text="@{Bank.name}"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/phone"
-        android:text="@{Bank.phone}"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:image_url="@{bank.url}"
+            tools:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_toRightOf="@+id/imageView"
+            android:text="@{bank.name}" />
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_toRightOf="@+id/imageView"
+            android:text="@{bank.phone}" />
     </RelativeLayout>
-
-
 </layout>

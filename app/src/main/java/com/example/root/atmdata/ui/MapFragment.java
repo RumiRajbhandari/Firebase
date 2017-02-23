@@ -93,7 +93,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
     public void onInfoWindowClick(Marker marker) {
         if(bankMap.get(marker.getId()) != null) {
             Intent intent = new Intent(getActivity(), AtmDetails.class);
-            intent.putExtra("bank", (Serializable) bankMap.get(marker.getId()));
+            intent.putExtra("bank", bankMap.get(marker.getId()));
             startActivity(intent);
         }
     }
