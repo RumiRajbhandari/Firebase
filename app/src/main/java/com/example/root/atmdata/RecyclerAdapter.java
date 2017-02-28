@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,12 @@ import android.view.ViewGroup;
 import com.example.root.atmdata.databinding.BankItemBinding;
 import com.example.root.atmdata.databinding.BankListBinding;
 
+import com.example.root.atmdata.helper.ItemTouchHelperAdapter;
 import com.example.root.atmdata.model.Bank;
+import com.example.root.atmdata.utilities.OnBankListChangedListner;
+import com.example.root.atmdata.utilities.OnStartDragListener;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -20,14 +25,18 @@ import java.util.List;
  * Created by root on 2/13/17.
  */
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> implements ItemTouchHelperAdapter{
 
     private List<Bank> bankList;
     private Context context;
+    private OnStartDragListener startDragListener;
+    private OnBankListChangedListner bankListChangedListner;
 
-    public RecyclerAdapter(List<Bank> bankList, Context context) {
+    public RecyclerAdapter(List<Bank> bankList, Context context, OnStartDragListener dragListener, OnBankListChangedListner bankListChangedListner) {
         this.context = context;
         this.bankList = bankList;
+        this.startDragListener=dragListener;
+        this.bankListChangedListner=bankListChangedListner;
     }
 
     public void setBankList(List<Bank> bankList) {
@@ -51,6 +60,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     @Override
     public int getItemCount() {
         return bankList.size();
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        if(fromPosition<toPosition){
+            for (int i=fromPosition;i<toPosition;i++){
+                Collections.swap(bankList,i,i+1);
+            }
+        }else {
+            for (int i=fromPosition;i>toPosition;i--){
+                Collections.swap(bankList,i,i-1);
+            }
+        }
+        bankListChangedListner.onNoteListChanged(bankList);
+        notifyItemMoved(fromPosition,toPosition);
+        return true;
+
     }
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
