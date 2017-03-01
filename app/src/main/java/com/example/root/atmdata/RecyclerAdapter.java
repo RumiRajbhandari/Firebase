@@ -4,17 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.root.atmdata.databinding.BankItemBinding;
-import com.example.root.atmdata.databinding.BankListBinding;
 
 import com.example.root.atmdata.helper.ItemTouchHelperAdapter;
 import com.example.root.atmdata.model.Bank;
-import com.example.root.atmdata.utilities.OnBankListChangedListner;
+import com.example.root.atmdata.utilities.OnBankListChangedListener;
 import com.example.root.atmdata.utilities.OnStartDragListener;
 
 import java.util.Collections;
@@ -30,9 +28,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     private List<Bank> bankList;
     private Context context;
     private OnStartDragListener startDragListener;
-    private OnBankListChangedListner bankListChangedListner;
+    private OnBankListChangedListener bankListChangedListner;
 
-    public RecyclerAdapter(List<Bank> bankList, Context context, OnStartDragListener dragListener, OnBankListChangedListner bankListChangedListner) {
+    public RecyclerAdapter(List<Bank> bankList, Context context, OnStartDragListener dragListener, OnBankListChangedListener bankListChangedListner) {
         this.context = context;
         this.bankList = bankList;
         this.startDragListener=dragListener;
@@ -73,7 +71,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                 Collections.swap(bankList,i,i-1);
             }
         }
-        bankListChangedListner.onNoteListChanged(bankList);
+        bankListChangedListner.onBankListOrderChanged(bankList);
         notifyItemMoved(fromPosition,toPosition);
         return true;
 

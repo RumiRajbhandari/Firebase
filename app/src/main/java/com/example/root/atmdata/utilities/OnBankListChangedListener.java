@@ -9,6 +9,6 @@ import java.util.List;
  * Created by root on 2/24/17.
  */
 
-public interface OnBankListChangedListner {
-    void onNoteListChanged(List<Bank> banks);
+public interface OnBankListChangedListener {
+    void onBankListOrderChanged(List<Bank> banks);
 }

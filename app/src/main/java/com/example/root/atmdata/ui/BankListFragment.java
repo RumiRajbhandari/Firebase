@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ItemDecoration;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import com.example.root.atmdata.base.BaseFragment;
 import com.example.root.atmdata.databinding.BankListBinding;
 import com.example.root.atmdata.helper.SimplerItemTouchHelperCallback;
 import com.example.root.atmdata.model.Bank;
-import com.example.root.atmdata.utilities.OnBankListChangedListner;
+import com.example.root.atmdata.utilities.OnBankListChangedListener;
 import com.example.root.atmdata.utilities.OnStartDragListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,7 +36,7 @@ import java.util.List;
 /**
  * Use {@link android.support.v7.widget.RecyclerView} to list out {@link Bank}
  */
-public class BankListFragment extends BaseFragment implements OnBankListChangedListner,OnStartDragListener{
+public class BankListFragment extends BaseFragment implements OnBankListChangedListener, OnStartDragListener {
 
     private RecyclerAdapter adapter;
     private List<Bank> bankList;
@@ -45,10 +44,10 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    public static final String LIST_OF_SORTED_DATA_ID="json_list_sorted_data_id";
-    public final static String PREFERENCE_FILE="preference_file";
+    public static final String LIST_OF_SORTED_DATA_ID = "json_list_sorted_data_id";
+    public final static String PREFERENCE_FILE = "preference_file";
 
-    List<Bank> sortedCustomers = new ArrayList<Bank>();
+    List<Bank> customBankListOrder = new ArrayList<Bank>();
 
     //get the JSON array of the ordered of sorted customers
 
@@ -123,72 +122,69 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sharedPreferences=this.getContext().getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE);
-        editor=sharedPreferences.edit();
+        sharedPreferences = this.getContext().getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
 
 
         // you can also sort bank before setting it to the adapter
-        bankList=sortBankListViaName(bankList);
-        adapter = new RecyclerAdapter(bankList, getContext(),this,this);
+        bankList = sortBankListViaName(bankList);
+        adapter = new RecyclerAdapter(bankList, getContext(), this, this);
         adapter.setBankList(bankList);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
-//        binding.setBankList(bankList);
-//        binding.setAdapter(adapter);
-//        // initialization code can be found in BindingUtil
 
-        ItemTouchHelper.Callback callback=new SimplerItemTouchHelperCallback(adapter);
-        itemTouchHelper=new ItemTouchHelper(callback);
+        ItemTouchHelper.Callback callback = new SimplerItemTouchHelperCallback(adapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(binding.recyclerView);
+        // great work here Rumi :)
+        // todo disable swipe
+        // todo add button that lets you access drag and drop immediately, rather than long press
     }
 
     @Override
     public void refreshData(List<Bank> bankList) {
         // show bank list in recycler view
         // you can also sort bank before setting it to the adapter
-        sortedCustomers=sortBankListViaName(bankList);
-        adapter.setBankList(sortedCustomers);
+        customBankListOrder = sortBankListViaName(bankList);
+        adapter.setBankList(customBankListOrder);
     }
 
     public List<Bank> sortBankListViaName(List<Bank> bankList) {
-        String jsonListOfSortedCustomerId = sharedPreferences.getString(PREFERENCE_FILE, "");
-//        Log.e("TAG", "sortBankListViaName: "+jsonListOfSortedCustomerId );
-        if (!jsonListOfSortedCustomerId.isEmpty()) {
+        String preferredBankListOrder = sharedPreferences.getString(PREFERENCE_FILE, "");
+
+        if (!preferredBankListOrder.isEmpty()) {
 
             //convert JSON array into a List<Long>
             Gson gson = new Gson();
-            List<String> listOfSortedCustomersId = gson.fromJson(jsonListOfSortedCustomerId, new TypeToken<List<String>>() {
+            List<String> preferredOrderBankIdList = gson.fromJson(preferredBankListOrder, new TypeToken<List<String>>() {
             }.getType());
 
             //build sorted list
-            if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0) {
-                for (String name : listOfSortedCustomersId) {
-                    Log.e("TAG", "sortBankListViaName: "+name );
+            if (preferredOrderBankIdList != null && preferredOrderBankIdList.size() > 0) {
+                for (String name : preferredOrderBankIdList) {
                     for (Bank customer : bankList) {
                         if (customer.getName().equals(name)) {
-                            sortedCustomers.add(customer);
+                            customBankListOrder.add(customer);
                             bankList.remove(customer);
                             break;
                         }
                     }
                 }
             }
-            if (bankList.size() > 0){
-                sortedCustomers.addAll(bankList);
+            if (bankList.size() > 0) {
+                customBankListOrder.addAll(bankList);
             }
-            return sortedCustomers;
+            return customBankListOrder;
 
 
-
-        }
-        else {
+        } else {
             Collections.sort(bankList, new Comparator<Bank>() {
                 @Override
                 public int compare(Bank o1, Bank o2) {
                     // sorting via name
                     // we can basically sort via so many other params. like locations near to you
                     // we can also add headers and categorizations to our list
-                     return o1.getName().compareTo(o2.getName());
+                    return o1.getName().compareTo(o2.getName());
                 }
             });
             return bankList;
@@ -201,26 +197,22 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         itemTouchHelper.startDrag(viewHolder);
-
     }
 
     @Override
-    public void onNoteListChanged(List<Bank> banks) {
-        List<String> listOfSortedBankId = new ArrayList<String>();
+    public void onBankListOrderChanged(List<Bank> banks) {
+        List<String> preferredBankListOrder = new ArrayList<String>();
 
-        for (Bank bank: banks){
-            listOfSortedBankId.add(bank.getName());
+        for (Bank bank : banks) {
+            preferredBankListOrder.add(bank.getName());
         }
 
         //convert the List of Longs to a JSON string
         Gson gson = new Gson();
-        String jsonListOfSortedBankNames= gson.toJson(listOfSortedBankId);
-
+        String jsonListOfSortedBankNames = gson.toJson(preferredBankListOrder);
 
         //save to SharedPreference
         editor.putString(PREFERENCE_FILE, jsonListOfSortedBankNames).commit();
         editor.commit();
-
-
     }
 }
