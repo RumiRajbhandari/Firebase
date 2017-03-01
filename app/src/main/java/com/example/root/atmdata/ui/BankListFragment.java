@@ -19,6 +19,7 @@ import com.example.root.atmdata.RecyclerAdapter;
 import com.example.root.atmdata.base.BaseFragment;
 import com.example.root.atmdata.databinding.BankListBinding;
 import com.example.root.atmdata.model.Bank;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -131,5 +132,10 @@ public class BankListFragment extends BaseFragment {
                 return o1.getName().compareTo(o2.getName());
             }
         });
+    }
+
+    @Override
+    public void onLocationUpdate(LatLng latLng) {
+
     }
 }

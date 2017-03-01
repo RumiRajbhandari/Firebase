@@ -7,6 +7,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 
@@ -37,6 +38,10 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
     private BankListener bankListener;
     private FirebaseDatabase database;
     private DatabaseReference bankReference;
+
+    /**
+     * todo move google api client implementation here, delegate location updates to fragment
+     */
 
 
     private static final String TAG = "MainActivity";
@@ -110,6 +115,8 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
                 String location = atmSnapshot.child(MyConstants.KEY_LOCATION).getValue().toString();
                 atm.setLatitude(Double.parseDouble(location.split(",")[0]));
                 atm.setLongitude(Double.parseDouble(location.split(",")[1]));
+                if (snapshot.child(MyConstants.KEY_STATUS) != null && snapshot.child(MyConstants.KEY_STATUS).getValue() != null)
+                    atm.setStatus(Boolean.parseBoolean(snapshot.child(MyConstants.KEY_STATUS).getValue().toString()));
                 atm.setReference(atmSnapshot.getRef().toString());
                 atmList.add(atm);
             }
@@ -132,10 +139,10 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         switch (item.getItemId()) {
             case R.id.navigation_bank:
                 bankListener = BankListFragment.newInstance(bankList);
-
                 break;
             case R.id.navigation_map:
-                bankListener = MapFragment.newInstance(bankList);
+                // todo send current user location
+                bankListener = MapFragment.newInstance(bankList, null);
                 break;
         }
         getSupportFragmentManager().beginTransaction()
