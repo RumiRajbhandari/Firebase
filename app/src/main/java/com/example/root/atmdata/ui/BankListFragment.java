@@ -25,6 +25,7 @@ import com.example.root.atmdata.helper.SimplerItemTouchHelperCallback;
 import com.example.root.atmdata.model.Bank;
 import com.example.root.atmdata.utilities.OnBankListChangedListener;
 import com.example.root.atmdata.utilities.OnStartDragListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -214,5 +215,10 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
         //save to SharedPreference
         editor.putString(PREFERENCE_FILE, jsonListOfSortedBankNames).commit();
         editor.commit();
+    }
+
+    @Override
+    public void onLocationUpdate(LatLng latLng) {
+
     }
 }
