@@ -3,10 +3,14 @@ package com.example.root.atmdata;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.root.atmdata.databinding.BankItemBinding;
 
@@ -42,6 +46,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         notifyDataSetChanged();
     }
 
+    public void updateList(List<Bank> bankList){
+        this.bankList=bankList;
+        notifyDataSetChanged();
+    }
+
+
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         BankItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
@@ -51,8 +61,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
         holder.getBinding().setBank(bankList.get(position));
+        holder.getBinding().getRoot().findViewById(R.id.image).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) ==
+                        MotionEvent.ACTION_DOWN) {
+                    startDragListener.onStartDrag(holder);
+                }
+                return false;
+            }
+        });
+
+
     }
 
     @Override
@@ -77,13 +99,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
     }
 
+
+
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
         // not BankListBinding, it's BankItemBinding
 //        BankListBinding binding;
+        ImageView handleView;
         private BankItemBinding binding;
 
-        public RecyclerViewHolder(BankItemBinding binding) {
+        public RecyclerViewHolder(final BankItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             this.binding.executePendingBindings();

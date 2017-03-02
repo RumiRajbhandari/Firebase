@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         bankReference.addValueEventListener(this);
 
         // initialize navigation
-        // todo: please change icons in navigation view
+
         navigationView.setNavigationItemSelectedListener(this);
         // default selection for navigation
         onNavigationItemSelected(navigationView.getMenu().getItem(0));

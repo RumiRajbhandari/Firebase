@@ -13,9 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ItemDecoration;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.example.root.atmdata.R;
 import com.example.root.atmdata.RecyclerAdapter;
@@ -34,12 +38,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Use {@link android.support.v7.widget.RecyclerView} to list out {@link Bank}
  */
 public class BankListFragment extends BaseFragment implements OnBankListChangedListener, OnStartDragListener {
 
     private RecyclerAdapter adapter;
+    private EditText search;
     private List<Bank> bankList;
     private ItemTouchHelper itemTouchHelper;
 
@@ -123,6 +130,28 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        search=(EditText)this.getActivity().findViewById(R.id.search);
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                filter(s.toString());
+
+            }
+        });
+
+
+
         sharedPreferences = this.getContext().getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
@@ -138,9 +167,8 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(binding.recyclerView);
         // great work here Rumi :)
-        // todo disable swipe
-        // todo add button that lets you access drag and drop immediately, rather than long press
-    }
+
+        }
 
     @Override
     public void refreshData(List<Bank> bankList) {
@@ -148,6 +176,18 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
         // you can also sort bank before setting it to the adapter
         customBankListOrder = sortBankListViaName(bankList);
         adapter.setBankList(customBankListOrder);
+    }
+    void filter(String text){
+        Log.e(TAG, "filter: "+text );
+        List<Bank> temp = new ArrayList();
+        for(Bank d: bankList){
+            if(d.getName().contains(text)){
+                temp.add(d);
+                Log.e("TAG", "filter: "+temp.toString());
+            }
+        }
+        //update recyclerview
+        adapter.updateList(temp);
     }
 
     public List<Bank> sortBankListViaName(List<Bank> bankList) {

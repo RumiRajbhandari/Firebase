@@ -43,7 +43,6 @@
                 android:layout_weight="1"
                 android:src="@drawable/mail" />
 
-            <!--todo remove the edit option here-->
 
         </LinearLayout>
 
@@ -120,7 +119,7 @@
                 android:textSize="15dp" />
         </LinearLayout>
 
-        <!-- todo add a small label on top-->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
