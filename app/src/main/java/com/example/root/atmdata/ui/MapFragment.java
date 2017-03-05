@@ -32,7 +32,9 @@ import com.example.root.atmdata.R;
 import com.example.root.atmdata.base.BaseFragment;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
+import com.firebase.client.Firebase;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -114,7 +116,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
-            public void onInfoWindowClick(Marker marker) {
+            public void onInfoWindowClick(final Marker marker) {
                 BankAtmMarkerMetadata metadata = bankMap.get(marker.getId());
                 // start dialog here
                 // dialog should have two options,
@@ -164,7 +166,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                 }
                 // rather than initializing another variable, use else
                 else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     // 2. Chain together various setter methods to set the dialog characteristics
                     LayoutInflater factory = LayoutInflater.from(getContext());
                     final View textEntryView = factory.inflate(R.layout.edit_atm, null);
@@ -187,6 +189,17 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // todo update atm status
                             Log.e(TAG, "onClick: " );
+                            if (bankMap.get(marker.getId()) != null) {
+//                    Intent intent = new Intent(getActivity(), AtmDetails.class);
+//                    intent.putExtra("bank", bankMap.get(marker.getId()).bank);
+//                    startActivity(intent);
+                                Log.e(TAG, "onClick: "+bankMap.get(marker.getId()).atm.getReference() );
+//                                String ref=bankMap.get(marker.getId()).atm.getReference();
+                                Firebase ref=new Firebase(bankMap.get(marker.getId()).atm.getReference());
+                                ref.child("status").setValue(""+switchCompact.isChecked());
+
+                }
+
 
 
 
@@ -226,7 +239,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                         if (atm.getLatitude() != Double.MIN_NORMAL) {
                             MarkerOptions options = new MarkerOptions();
                             // if atm is open AZURE
-                            options.icon(atm.getStatus() ?
+                            options.icon((atm.getStatus()=="true") ?
                                     BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE) :
                                     BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                             options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
@@ -236,6 +249,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                             metadata.atm = atm;
                             bankMap.put(marker.getId(), metadata);
                             markerList.add(marker);
+//                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
                         }
                     }
             }
@@ -288,7 +302,10 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
             Atm atm = bankMap.get(marker.getId()).atm;
             Bank bank = bankMap.get(marker.getId()).bank;
-            status.setText("Status: " + (atm.getStatus() ? "Open" : "Close"));
+//            Log.e(TAG, "getInfoContents: "+atm.getLatitude() );
+//            Log.e(TAG, "getInfoContents: "+atm.toString() );
+            Log.e(TAG, "getInfoContents: "+atm.getStatus().compareToIgnoreCase("true") );
+            status.setText("Status: " + (((atm.getStatus().compareToIgnoreCase("true")==0) ? "Open" : "Close")));
             atmName.setText(bank.getName() + " ATM");
 
             button.setOnClickListener(new View.OnClickListener() {

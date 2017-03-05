@@ -11,14 +11,14 @@ public class Atm implements Serializable {
     // assign default values to latitude, longitude
     private Double latitude = Double.MIN_NORMAL;
     private Double longitude = Double.MIN_NORMAL;
-    private boolean status;
+    private String status;
     private String reference;
 
     public Atm() {
 
     }
 
-    public Atm(Double latitude, Double longitude, boolean status) {
+    public Atm(Double latitude, Double longitude, String status) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = status;
@@ -40,7 +40,7 @@ public class Atm implements Serializable {
         return longitude;
     }
 
-    public boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -52,7 +52,7 @@ public class Atm implements Serializable {
         this.longitude = longitude;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

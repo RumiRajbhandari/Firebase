@@ -111,12 +111,15 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
             List<Atm> atmList = new ArrayList<>();
             // looping for atm 0, 1, 2 ...
             for (DataSnapshot atmSnapshot : snapshot.child(MyConstants.KEY_ATM_LIST).getChildren()) {
+                Log.e(TAG, "onDataChange: "+atmSnapshot.toString() );
                 Atm atm = new Atm();
                 String location = atmSnapshot.child(MyConstants.KEY_LOCATION).getValue().toString();
                 atm.setLatitude(Double.parseDouble(location.split(",")[0]));
                 atm.setLongitude(Double.parseDouble(location.split(",")[1]));
-                if (snapshot.child(MyConstants.KEY_STATUS) != null && snapshot.child(MyConstants.KEY_STATUS).getValue() != null)
-                    atm.setStatus(Boolean.parseBoolean(snapshot.child(MyConstants.KEY_STATUS).getValue().toString()));
+               atm.setStatus((String)atmSnapshot.child(MyConstants.KEY_STATUS).getValue());
+//                if (snapshot.child(MyConstants.KEY_STATUS) != null && snapshot.child(MyConstants.KEY_STATUS).getValue() != null)
+//                    atm.setStatus((snapshot.child(MyConstants.KEY_STATUS).getValue().toString()));
+                //Log.e(TAG, "onDataChange: "+snapshot.child(MyConstants.KEY_STATUS).getValue().toString());
                 atm.setReference(atmSnapshot.getRef().toString());
                 atmList.add(atm);
             }
