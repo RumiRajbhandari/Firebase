@@ -249,13 +249,16 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                             metadata.atm = atm;
                             bankMap.put(marker.getId(), metadata);
                             markerList.add(marker);
+
 //                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
+
+//                           googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
+
                         }
                     }
             }
         }
     }
-
 
     @Override
     public Fragment getFragment() {
