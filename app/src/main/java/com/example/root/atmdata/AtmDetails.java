@@ -7,12 +7,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.SwitchCompat;
 import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,12 +37,12 @@ import com.squareup.picasso.Picasso;
  * Created by root on 2/13/17.
  */
 public class AtmDetails extends BaseActivity {
-
     // using data binding here would be more fruitful
     private Atm atm;
     private Bank bank;
     private TextView bankName, phone, email, openingHour, headOffice;
     private ImageView image;
+     SwitchCompat switchCompact;
     // only use one shared preference
     private SharedPreferences sharedPreferences;
 
@@ -56,6 +61,7 @@ public class AtmDetails extends BaseActivity {
         openingHour = (TextView) findViewById(R.id.opening_hour);
         headOffice = (TextView) findViewById(R.id.head_office);
         image = (ImageView) findViewById(R.id.image);
+
 
         bank = (Bank) getIntent().getSerializableExtra(Bank.EXTRA_KEY);
 
@@ -89,7 +95,8 @@ public class AtmDetails extends BaseActivity {
     public void call(View view) {
 
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:9849829387"));
+        Log.e("TAG", "call: "+bank.getPhone() );
+        callIntent.setData(Uri.parse("tel:"+bank.getPhone()));
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -103,6 +110,7 @@ public class AtmDetails extends BaseActivity {
         startActivity(callIntent);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void edit(View view) {
 
         // move variables to MyConstants
@@ -146,11 +154,20 @@ public class AtmDetails extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             // 2. Chain together various setter methods to set the dialog characteristics
             builder.setMessage("Please set the status")
-                    .setTitle("Status update");
+                    .setTitle("Status update")
+            .setView(R.layout.edit_atm);
+
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     // todo update atm status
+                    switchCompact=(SwitchCompat)findViewById(R.id.previewSwitch2);
+                    switchCompact.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        }
+                    });
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -165,5 +182,9 @@ public class AtmDetails extends BaseActivity {
             dialog.show();
         }
     }
+
+
+
+
 }
 

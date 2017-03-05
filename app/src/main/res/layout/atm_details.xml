@@ -42,6 +42,12 @@
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:src="@drawable/mail" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/record"
+                android:id="@+id/edit"
+                android:onClick="edit"/>
 
 
         </LinearLayout>
