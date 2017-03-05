@@ -4,16 +4,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <android.support.v7.widget.SwitchCompat
-        android:paddingTop="10dp"
-        android:paddingLeft="30dp"
-        android:id="@+id/previewSwitch2"
+    <Switch
+        android:id="@+id/mySwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="true"
-        android:hint="Status of Atm"
-        android:textOff="OFF"
-        android:textOn="ON"
-        app:showText="true"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:text="Change the status" />
+
 
 </LinearLayout>

@@ -1,19 +1,31 @@
 package com.example.root.atmdata.ui;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.SwitchCompat;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 
 import com.example.root.atmdata.AtmDetails;
 import com.example.root.atmdata.R;
@@ -46,6 +58,10 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     private HashMap<String, BankAtmMarkerMetadata> bankMap;
     private GoogleApiClient client;
     private LatLng latLng;
+    Switch switchCompact;
+    // only use one shared preference
+    private SharedPreferences sharedPreferences;
+
 
     public static MapFragment newInstance(List<Bank> bankList, LatLng latLng) {
         MapFragment mapFragment = new MapFragment();
@@ -69,6 +85,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         SupportMapFragment fragment = new SupportMapFragment();
         getChildFragmentManager().beginTransaction().add(R.id.map_container, fragment).commit();
         fragment.getMapAsync(this);
+
     }
 
     @Override
@@ -95,6 +112,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 //        googleMap.setMyLocationEnabled(true);
         googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(LayoutInflater.from(getContext())));
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onInfoWindowClick(Marker marker) {
                 BankAtmMarkerMetadata metadata = bankMap.get(marker.getId());
@@ -109,6 +127,83 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                 // 2) change atm status
                 // todo add atm status change here
                 Toast.makeText(getContext(), "Rumi", Toast.LENGTH_SHORT).show();
+                sharedPreferences = getContext().getSharedPreferences("AtmData", Context.MODE_PRIVATE);
+                String na = sharedPreferences.getString("name", "");
+                Log.e("TAg", "edit:.........." + na);
+                if (na.isEmpty()) {
+                    final EditText editText = new EditText(getContext());
+                    editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                    // 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("Please set the status")
+                            .setTitle("Please Enter your name")
+                            .setView(editText);
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String userName = editText.getText().toString();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("name", userName);
+                            editor.apply();
+                            Log.e("TAG", "onClick: " + userName);
+                            // todo also update ATM status
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+
+                    // 3. Get the AlertDialog from create()
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                }
+                // rather than initializing another variable, use else
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    // 2. Chain together various setter methods to set the dialog characteristics
+                    LayoutInflater factory = LayoutInflater.from(getContext());
+                    final View textEntryView = factory.inflate(R.layout.edit_atm, null);
+
+                    builder.setMessage("Please set the status")
+                            .setTitle("Status update")
+                            .setView(textEntryView);
+                    switchCompact=(Switch)textEntryView.findViewById(R.id.mySwitch);
+                    switchCompact.setChecked(true);
+                    switchCompact.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            Log.e(TAG, "onCheckedChanged: "+isChecked );
+
+                        }
+                    });
+
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // todo update atm status
+                            Log.e(TAG, "onClick: " );
+
+
+
+
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+
+                    // 3. Get the AlertDialog from create()
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
 
             }
         });

@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.root.atmdata.base.BaseActivity;
@@ -42,9 +43,7 @@ public class AtmDetails extends BaseActivity {
     private Bank bank;
     private TextView bankName, phone, email, openingHour, headOffice;
     private ImageView image;
-     SwitchCompat switchCompact;
-    // only use one shared preference
-    private SharedPreferences sharedPreferences;
+
 
     @Override
     public int layout() {
@@ -109,81 +108,6 @@ public class AtmDetails extends BaseActivity {
         }
         startActivity(callIntent);
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void edit(View view) {
-
-        // move variables to MyConstants
-        sharedPreferences = getSharedPreferences("AtmData", Context.MODE_PRIVATE);
-        String na = sharedPreferences.getString("name", "");
-        Log.e("TAg", "edit:.........." + na);
-        if (na.isEmpty()) {
-            final EditText editText = new EditText(this);
-            editText.setInputType(InputType.TYPE_CLASS_TEXT);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            // 2. Chain together various setter methods to set the dialog characteristics
-            builder.setMessage("Please set the status")
-                    .setTitle("Please Enter your name")
-                    .setView(editText);
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    String userName = editText.getText().toString();
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("name", userName);
-                    editor.apply();
-                    Log.e("TAG", "onClick: " + userName);
-                    // todo also update ATM status
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                }
-            });
-
-            // 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-            dialog.show();
-
-        }
-        // rather than initializing another variable, use else
-        else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // 2. Chain together various setter methods to set the dialog characteristics
-            builder.setMessage("Please set the status")
-                    .setTitle("Status update")
-            .setView(R.layout.edit_atm);
-
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    // todo update atm status
-                    switchCompact=(SwitchCompat)findViewById(R.id.previewSwitch2);
-                    switchCompact.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                        }
-                    });
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                }
-            });
-
-            // 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-    }
-
-
 
 
 }
