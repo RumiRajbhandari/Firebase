@@ -10,16 +10,18 @@
         android:weightSum="1">
 
         <ImageView
+
             android:id="@+id/image"
             android:layout_width="match_parent"
+
             android:layout_height="150dp" />
 
         <TextView
             android:id="@+id/bank_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:hint="Nepal Rastra Bank"
+            android:paddingLeft="10dp"
             android:textSize="30dp" />
 
         <LinearLayout
@@ -32,7 +34,7 @@
                 android:id="@+id/img_call"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
+                android:layout_weight="1.57"
                 android:onClick="call"
                 android:src="@drawable/call" />
 
@@ -41,22 +43,16 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:src="@drawable/mail" />
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/record"
-                android:id="@+id/edit"
-                android:onClick="edit"/>
-
+                android:src="@drawable/mail"
+                android:onClick="email"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -74,13 +70,14 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Phone: "
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/phone"
@@ -92,7 +89,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -110,7 +108,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -129,15 +128,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="10dp"
             android:text="Atm List"
-            android:textSize="20dp" />
+            android:textSize="15dp"
+            android:paddingLeft="10dp"/>
 
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 </ScrollView>

@@ -23,8 +23,13 @@
             android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+
             tools:text="Status: Open" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/updated_time"
+            tools:text="12.00"/>
     </LinearLayout>
 
     <Button
@@ -32,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="italic"
-        android:text="Click to view bank details or change atm status" />
+        android:text="More" />
 
 
 </LinearLayout>

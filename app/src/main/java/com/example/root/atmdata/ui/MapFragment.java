@@ -43,9 +43,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.R.attr.button;
+import static android.R.id.button2;
 
 /**
  * Plot {@link Atm} into map
@@ -119,105 +125,115 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             public void onInfoWindowClick(final Marker marker) {
                 BankAtmMarkerMetadata metadata = bankMap.get(marker.getId());
                 // start dialog here
-                // dialog should have two options,
-                // 1) view bank details
-//                if (bankMap.get(marker.getId()) != null) {
-//                    Intent intent = new Intent(getActivity(), AtmDetails.class);
-//                    intent.putExtra("bank", bankMap.get(marker.getId()).bank);
-//                    startActivity(intent);
-//                }
-                // 2) change atm status
-                // todo add atm status change here
-                Toast.makeText(getContext(), "Rumi", Toast.LENGTH_SHORT).show();
-                sharedPreferences = getContext().getSharedPreferences("AtmData", Context.MODE_PRIVATE);
-                String na = sharedPreferences.getString("name", "");
-                Log.e("TAg", "edit:.........." + na);
-                if (na.isEmpty()) {
-                    final EditText editText = new EditText(getContext());
-                    editText.setInputType(InputType.TYPE_CLASS_TEXT);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder3 = new AlertDialog.Builder(getContext());
 
-                    // 2. Chain together various setter methods to set the dialog characteristics
-                    builder.setMessage("Please set the status")
-                            .setTitle("Please Enter your name")
-                            .setView(editText);
-                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            String userName = editText.getText().toString();
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("name", userName);
-                            editor.apply();
-                            Log.e("TAG", "onClick: " + userName);
-                            // todo also update ATM status
+                // 2. Chain together various setter methods to set the dialog characteristics
+                builder3.setTitle("Please chose an action");
+                builder3.setPositiveButton("Atm Details", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // dialog should have two options,
+//                 1) view bank details
+                        if (bankMap.get(marker.getId()) != null) {
+                            Intent intent = new Intent(getActivity(), AtmDetails.class);
+                            intent.putExtra("bank", bankMap.get(marker.getId()).bank);
+                            startActivity(intent);
                         }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                        }
-                    });
 
-                    // 3. Get the AlertDialog from create()
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+                    }
+                });
+                builder3.setNegativeButton("edit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // 2) change atm status
+                        // todo add atm status change here
+                        Toast.makeText(getContext(), "Rumi", Toast.LENGTH_SHORT).show();
+                        sharedPreferences = getContext().getSharedPreferences("AtmData", Context.MODE_PRIVATE);
+                        final String name = sharedPreferences.getString("name", "");
+                        Log.e("TAg", "edit:.........." + name);
+                        if (name.isEmpty()) {
+                            final EditText editText = new EditText(getContext());
+                            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-                }
-                // rather than initializing another variable, use else
-                else {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    // 2. Chain together various setter methods to set the dialog characteristics
-                    LayoutInflater factory = LayoutInflater.from(getContext());
-                    final View textEntryView = factory.inflate(R.layout.edit_atm, null);
+                            // 2. Chain together various setter methods to set the dialog characteristics
+                            builder.setTitle("Please Enter your name")
+                                    .setView(editText);
+                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String userName = editText.getText().toString();
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("name", userName);
+                                    editor.apply();
 
-                    builder.setMessage("Please set the status")
-                            .setTitle("Status update")
-                            .setView(textEntryView);
-                    switchCompact=(Switch)textEntryView.findViewById(R.id.mySwitch);
-                    switchCompact.setChecked(true);
-                    switchCompact.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            Log.e(TAG, "onCheckedChanged: "+isChecked );
+                                }
+                            });
+                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                }
+                            });
+
+                            // 3. Get the AlertDialog from create()
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
 
                         }
-                    });
+                        // rather than initializing another variable, use else
+                        else {
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            // 2. Chain together various setter methods to set the dialog characteristics
+                            LayoutInflater factory = LayoutInflater.from(getContext());
+                            final View textEntryView = factory.inflate(R.layout.edit_atm, null);
 
-                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            // todo update atm status
-                            Log.e(TAG, "onClick: " );
-                            if (bankMap.get(marker.getId()) != null) {
-//                    Intent intent = new Intent(getActivity(), AtmDetails.class);
-//                    intent.putExtra("bank", bankMap.get(marker.getId()).bank);
-//                    startActivity(intent);
-                                Log.e(TAG, "onClick: "+bankMap.get(marker.getId()).atm.getReference() );
+                            builder.setTitle("Status update")
+                                    .setView(textEntryView);
+                            switchCompact=(Switch)textEntryView.findViewById(R.id.mySwitch);
+                            switchCompact.setChecked(true);
+                            switchCompact.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                @Override
+                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                    Log.e(TAG, "onCheckedChanged: "+isChecked );
+
+                                }
+                            });
+
+                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    // todo update atm status
+                                    Log.e(TAG, "onClick: " );
+                                    if (bankMap.get(marker.getId()) != null) {
+//                                        Log.e(TAG, "onClick: "+bankMap.get(marker.getId()).atm.getReference() );
 //                                String ref=bankMap.get(marker.getId()).atm.getReference();
-                                Firebase ref=new Firebase(bankMap.get(marker.getId()).atm.getReference());
-                                ref.child("status").setValue(""+switchCompact.isChecked());
+                                        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+                                        String date = df.format(Calendar.getInstance().getTime());
+                                        Firebase ref=new Firebase(bankMap.get(marker.getId()).atm.getReference());
+                                        ref.child("status").setValue(""+switchCompact.isChecked());
+                                        ref.child("status_update_time").setValue(date);
+                                        ref.child("updated_by").setValue(name);
 
-                }
-
-
-
-
-
+                                    }
+                                }
+                            });
+                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            });
+                            // 3. Get the AlertDialog from create()
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
                         }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
 
-                        }
-                    });
-
-                    // 3. Get the AlertDialog from create()
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
-
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder3.create();
+                dialog.show();
             }
         });
         plotAtmList(bankList);
@@ -279,6 +295,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         ViewGroup windowContainer;
         TextView status;
         TextView atmName;
+        TextView updatedTime;
         Button button;
 
         CustomInfoWindowAdapter(LayoutInflater inflater) {
@@ -296,12 +313,13 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         public View getInfoContents(final Marker marker) {
 
             markerView = inflater.inflate(R.layout.custominfowindow, null, false);
-            markerView.setLayoutParams(new ViewGroup.LayoutParams(500, 500));
+            markerView.setLayoutParams(new ViewGroup.LayoutParams(350, 350));
 
             windowContainer = (ViewGroup) markerView.findViewById(R.id.window_container);
             status = (TextView) markerView.findViewById(R.id.status);
             atmName = (TextView) markerView.findViewById(R.id.atm_name);
             button=(Button)markerView.findViewById(R.id.edit);
+            updatedTime=(TextView)markerView.findViewById(R.id.updated_time);
 
             Atm atm = bankMap.get(marker.getId()).atm;
             Bank bank = bankMap.get(marker.getId()).bank;
@@ -310,6 +328,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             Log.e(TAG, "getInfoContents: "+atm.getStatus().compareToIgnoreCase("true") );
             status.setText("Status: " + (((atm.getStatus().compareToIgnoreCase("true")==0) ? "Open" : "Close")));
             atmName.setText(bank.getName() + " ATM");
+            //TODO: show updated time;
+//            updatedTime.setText("Updated Time: "+atm.get);
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override

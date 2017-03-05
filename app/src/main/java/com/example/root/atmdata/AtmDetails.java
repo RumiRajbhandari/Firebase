@@ -109,6 +109,16 @@ public class AtmDetails extends BaseActivity {
         startActivity(callIntent);
     }
 
+    public void email(View view){
+
+        String to = bank.getEmail();
+
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
+        email.setType("message/rfc822");
+        startActivity(Intent.createChooser(email, "Choose an Email client :"));
+    }
+
 
 }
 
