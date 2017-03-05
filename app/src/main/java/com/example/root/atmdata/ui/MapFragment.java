@@ -108,6 +108,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 //                }
                 // 2) change atm status
                 // todo add atm status change here
+                Toast.makeText(getContext(), "Rumi", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -188,6 +189,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             windowContainer = (ViewGroup) markerView.findViewById(R.id.window_container);
             status = (TextView) markerView.findViewById(R.id.status);
             atmName = (TextView) markerView.findViewById(R.id.atm_name);
+            button=(Button)markerView.findViewById(R.id.edit);
 
             Atm atm = bankMap.get(marker.getId()).atm;
             Bank bank = bankMap.get(marker.getId()).bank;
