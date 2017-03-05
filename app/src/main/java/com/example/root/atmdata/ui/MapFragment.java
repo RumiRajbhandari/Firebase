@@ -33,6 +33,7 @@ import com.example.root.atmdata.base.BaseFragment;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -236,6 +237,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                             metadata.atm = atm;
                             bankMap.put(marker.getId(), metadata);
                             markerList.add(marker);
+                           googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
                         }
                     }
             }
