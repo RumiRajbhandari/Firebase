@@ -138,6 +138,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         // todo add check if fragment exists
         switch (item.getItemId()) {
             case R.id.navigation_bank:
+
                 bankListener = BankListFragment.newInstance(bankList);
                 break;
             case R.id.navigation_map:
