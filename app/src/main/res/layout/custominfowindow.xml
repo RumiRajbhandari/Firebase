@@ -34,4 +34,5 @@
         android:textStyle="italic"
         android:text="Click to view bank details or change atm status" />
 
+
 </LinearLayout>

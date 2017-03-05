@@ -146,7 +146,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         }
     }
 
-
     @Override
     public Fragment getFragment() {
         return this;
