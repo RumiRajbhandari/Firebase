@@ -35,11 +35,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <EditText
+            android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/search"
-            android:hint="Search"/>
+            android:hint="Search" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

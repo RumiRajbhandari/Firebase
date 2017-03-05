@@ -130,7 +130,7 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        search=(EditText)this.getActivity().findViewById(R.id.search);
+        search = (EditText) this.getActivity().findViewById(R.id.search);
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -144,12 +144,10 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                // if text is empty, revert back to old list
                 filter(s.toString());
-
             }
         });
-
 
 
         sharedPreferences = this.getContext().getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE);
@@ -160,6 +158,8 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
         bankList = sortBankListViaName(bankList);
         adapter = new RecyclerAdapter(bankList, getContext(), this, this);
         adapter.setBankList(bankList);
+        binding.recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
 
@@ -168,7 +168,7 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
         itemTouchHelper.attachToRecyclerView(binding.recyclerView);
         // great work here Rumi :)
 
-        }
+    }
 
     @Override
     public void refreshData(List<Bank> bankList) {
@@ -177,13 +177,14 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
         customBankListOrder = sortBankListViaName(bankList);
         adapter.setBankList(customBankListOrder);
     }
-    void filter(String text){
-        Log.e(TAG, "filter: "+text );
+
+    void filter(String text) {
+        Log.e(TAG, "filter: " + text);
         List<Bank> temp = new ArrayList();
-        for(Bank d: bankList){
-            if(d.getName().contains(text)){
+        for (Bank d : bankList) {
+            if (d.getName().contains(text)) {
                 temp.add(d);
-                Log.e("TAG", "filter: "+temp.toString());
+                Log.e("TAG", "filter: " + temp.toString());
             }
         }
         //update recyclerview

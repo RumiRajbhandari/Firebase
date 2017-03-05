@@ -27,7 +27,7 @@ import java.util.List;
  * Created by root on 2/13/17.
  */
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> implements ItemTouchHelperAdapter{
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> implements ItemTouchHelperAdapter {
 
     private List<Bank> bankList;
     private Context context;
@@ -37,8 +37,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public RecyclerAdapter(List<Bank> bankList, Context context, OnStartDragListener dragListener, OnBankListChangedListener bankListChangedListner) {
         this.context = context;
         this.bankList = bankList;
-        this.startDragListener=dragListener;
-        this.bankListChangedListner=bankListChangedListner;
+        this.startDragListener = dragListener;
+        this.bankListChangedListner = bankListChangedListner;
     }
 
     public void setBankList(List<Bank> bankList) {
@@ -46,18 +46,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         notifyDataSetChanged();
     }
 
-    public void updateList(List<Bank> bankList){
-        this.bankList=bankList;
+    public void updateList(List<Bank> bankList) {
+        this.bankList = bankList;
         notifyDataSetChanged();
     }
-
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         BankItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                 R.layout.single_row, parent, false);
         return new RecyclerViewHolder(binding);
-
     }
 
     @Override
@@ -84,21 +82,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        if(fromPosition<toPosition){
-            for (int i=fromPosition;i<toPosition;i++){
-                Collections.swap(bankList,i,i+1);
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(bankList, i, i + 1);
             }
-        }else {
-            for (int i=fromPosition;i>toPosition;i--){
-                Collections.swap(bankList,i,i-1);
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(bankList, i, i - 1);
             }
         }
         bankListChangedListner.onBankListOrderChanged(bankList);
-        notifyItemMoved(fromPosition,toPosition);
+        notifyItemMoved(fromPosition, toPosition);
         return true;
 
     }
-
 
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {

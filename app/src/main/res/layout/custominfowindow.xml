@@ -10,7 +10,6 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
         android:orientation="vertical">
 
         <TextView
@@ -25,19 +24,21 @@
             android:layout_height="wrap_content"
 
             tools:text="Status: Open" />
+
         <TextView
+            android:id="@+id/updated_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/updated_time"
-            tools:text="12.00"/>
+            tools:text="Updated Time: 12.00" />
     </LinearLayout>
 
-    <Button
+    <TextView
         android:id="@+id/edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="italic"
-        android:text="More" />
+        android:layout_marginTop="10dp"
+        android:text="Click to View More"
+        android:textStyle="italic" />
 
 
 </LinearLayout>

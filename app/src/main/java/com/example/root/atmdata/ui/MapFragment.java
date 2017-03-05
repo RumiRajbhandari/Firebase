@@ -13,19 +13,16 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.SwitchCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.SharedPreferences;
 
 import com.example.root.atmdata.AtmDetails;
 import com.example.root.atmdata.R;
@@ -49,9 +46,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.R.attr.button;
-import static android.R.id.button2;
 
 /**
  * Plot {@link Atm} into map
@@ -93,7 +87,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         SupportMapFragment fragment = new SupportMapFragment();
         getChildFragmentManager().beginTransaction().add(R.id.map_container, fragment).commit();
         fragment.getMapAsync(this);
-
     }
 
     @Override
@@ -123,27 +116,27 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onInfoWindowClick(final Marker marker) {
-                BankAtmMarkerMetadata metadata = bankMap.get(marker.getId());
+                final BankAtmMarkerMetadata metadata = bankMap.get(marker.getId());
                 // start dialog here
-                AlertDialog.Builder builder3 = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                 // 2. Chain together various setter methods to set the dialog characteristics
-                builder3.setTitle("Please chose an action");
-                builder3.setPositiveButton("Atm Details", new DialogInterface.OnClickListener() {
+                builder.setTitle("Please chose an action");
+                builder.setPositiveButton("ATM Details", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // dialog should have two options,
 //                 1) view bank details
                         if (bankMap.get(marker.getId()) != null) {
                             Intent intent = new Intent(getActivity(), AtmDetails.class);
-                            intent.putExtra("bank", bankMap.get(marker.getId()).bank);
+                            intent.putExtra("bank", metadata.bank);
                             startActivity(intent);
                         }
 
 
                     }
                 });
-                builder3.setNegativeButton("edit", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Edit ATM status", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // 2) change atm status
@@ -191,12 +184,12 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
                             builder.setTitle("Status update")
                                     .setView(textEntryView);
-                            switchCompact=(Switch)textEntryView.findViewById(R.id.mySwitch);
+                            switchCompact = (Switch) textEntryView.findViewById(R.id.atm_status_switch);
                             switchCompact.setChecked(true);
                             switchCompact.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                 @Override
                                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                    Log.e(TAG, "onCheckedChanged: "+isChecked );
+                                    Log.e(TAG, "onCheckedChanged: " + isChecked);
 
                                 }
                             });
@@ -205,14 +198,14 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     // todo update atm status
-                                    Log.e(TAG, "onClick: " );
+                                    Log.e(TAG, "onClick: ");
                                     if (bankMap.get(marker.getId()) != null) {
 //                                        Log.e(TAG, "onClick: "+bankMap.get(marker.getId()).atm.getReference() );
 //                                String ref=bankMap.get(marker.getId()).atm.getReference();
                                         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
                                         String date = df.format(Calendar.getInstance().getTime());
-                                        Firebase ref=new Firebase(bankMap.get(marker.getId()).atm.getReference());
-                                        ref.child("status").setValue(""+switchCompact.isChecked());
+                                        Firebase ref = new Firebase(bankMap.get(marker.getId()).atm.getReference());
+                                        ref.child("status").setValue("" + switchCompact.isChecked());
                                         ref.child("status_update_time").setValue(date);
                                         ref.child("updated_by").setValue(name);
 
@@ -232,7 +225,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                 });
 
                 // 3. Get the AlertDialog from create()
-                AlertDialog dialog = builder3.create();
+                AlertDialog dialog = builder.create();
                 dialog.show();
             }
         });
@@ -241,7 +234,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
     @Override
     public void onLocationUpdate(LatLng latLng) {
-
+        // get user location here
+        // add camera changes here if necessary
     }
 
     void plotAtmList(List<Bank> bankList) {
@@ -255,21 +249,21 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                         if (atm.getLatitude() != Double.MIN_NORMAL) {
                             MarkerOptions options = new MarkerOptions();
                             // if atm is open AZURE
-                            options.icon((atm.getStatus()=="true") ?
-                                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE) :
-                                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                            options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
-                            Marker marker = googleMap.addMarker(options);
-                            BankAtmMarkerMetadata metadata = new BankAtmMarkerMetadata();
-                            metadata.bank = bank;
-                            metadata.atm = atm;
-                            bankMap.put(marker.getId(), metadata);
-                            markerList.add(marker);
-
-//                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
-
+                            if (atm.getStatus() != null) {
+                                Log.e(TAG, "plotAtmList: " + atm.getStatus());
+                                options.icon((atm.getStatus().equalsIgnoreCase("true")) ?
+                                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE) :
+                                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                                options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
+                                Marker marker = googleMap.addMarker(options);
+                                BankAtmMarkerMetadata metadata = new BankAtmMarkerMetadata();
+                                metadata.bank = bank;
+                                metadata.atm = atm;
+                                bankMap.put(marker.getId(), metadata);
+                                markerList.add(marker);
+                            }
+                            // do not add zoom here. first get user location and then only request camera change
 //                           googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
-
                         }
                     }
             }
@@ -296,7 +290,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         TextView status;
         TextView atmName;
         TextView updatedTime;
-        Button button;
+        TextView button;
 
         CustomInfoWindowAdapter(LayoutInflater inflater) {
             this.inflater = inflater;
@@ -318,26 +312,16 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
             windowContainer = (ViewGroup) markerView.findViewById(R.id.window_container);
             status = (TextView) markerView.findViewById(R.id.status);
             atmName = (TextView) markerView.findViewById(R.id.atm_name);
-            button=(Button)markerView.findViewById(R.id.edit);
-            updatedTime=(TextView)markerView.findViewById(R.id.updated_time);
+            button = (TextView) markerView.findViewById(R.id.edit);
+            updatedTime = (TextView) markerView.findViewById(R.id.updated_time);
 
             Atm atm = bankMap.get(marker.getId()).atm;
             Bank bank = bankMap.get(marker.getId()).bank;
-//            Log.e(TAG, "getInfoContents: "+atm.getLatitude() );
-//            Log.e(TAG, "getInfoContents: "+atm.toString() );
-            Log.e(TAG, "getInfoContents: "+atm.getStatus().compareToIgnoreCase("true") );
-            status.setText("Status: " + (((atm.getStatus().compareToIgnoreCase("true")==0) ? "Open" : "Close")));
+            Log.e(TAG, "getInfoContents: " + atm.getStatus().equalsIgnoreCase("true"));
+            status.setText("Status: " + (atm.getStatus().equalsIgnoreCase("true") ? "Open" : "Close"));
             atmName.setText(bank.getName() + " ATM");
             //TODO: show updated time;
 //            updatedTime.setText("Updated Time: "+atm.get);
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: 3/1/17 implement atm status change here
-                    Toast.makeText(getContext(), "This is toast", Toast.LENGTH_LONG).show();
-                }
-            });
             return markerView;
         }
     }
