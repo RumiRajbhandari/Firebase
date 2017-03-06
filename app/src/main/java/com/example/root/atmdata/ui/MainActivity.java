@@ -107,6 +107,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
             bank.setOpeningHours((String) snapshot.child(MyConstants.KEY_OPENING_HOURS)
                     .getValue());
             bank.setUrl((String) snapshot.child(MyConstants.KEY_URL).getValue());
+            Log.e(TAG, "onDataChange: "+bank.getName() );
 
             List<Atm> atmList = new ArrayList<>();
             // looping for atm 0, 1, 2 ...
