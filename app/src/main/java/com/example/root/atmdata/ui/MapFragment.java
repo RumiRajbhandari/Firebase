@@ -63,6 +63,9 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     Switch switchCompact;
     // only use one shared preference
     private SharedPreferences sharedPreferences;
+    /**
+     * todo if there's time implement marker clustering -> https://developers.google.com/maps/documentation/android-api/utility/marker-clustering
+     */
 
 
     public static MapFragment newInstance(List<Bank> bankList, LatLng latLng) {
@@ -92,25 +95,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-
-        // todo move location request to MainActivity
-        // request and ask for permission first
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        }
-
-        // if (location != null) {
-        // Getting latitude of the current location
-        //  double latitude = location.getLatitude();
-
-        // Getting longitude of the current location
-        // double longitude = location.getLongitude();
-
-        // Creating a LatLng object for the current location
-        // LatLng latLng = new LatLng(latitude, longitude);
-
-//        googleMap.setMyLocationEnabled(true);
         googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(LayoutInflater.from(getContext())));
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -197,18 +181,14 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    // todo update atm status
                                     Log.e(TAG, "onClick: ");
                                     if (bankMap.get(marker.getId()) != null) {
-//                                        Log.e(TAG, "onClick: "+bankMap.get(marker.getId()).atm.getReference() );
-//                                String ref=bankMap.get(marker.getId()).atm.getReference();
                                         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
                                         String date = df.format(Calendar.getInstance().getTime());
                                         Firebase ref = new Firebase(bankMap.get(marker.getId()).atm.getReference());
                                         ref.child("status").setValue("" + switchCompact.isChecked());
                                         ref.child("status_update_time").setValue(date);
                                         ref.child("updated_by").setValue(name);
-
                                     }
                                 }
                             });

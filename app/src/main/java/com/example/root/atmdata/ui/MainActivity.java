@@ -1,9 +1,13 @@
 package com.example.root.atmdata.ui;
 
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +21,10 @@ import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
 import com.example.root.atmdata.util.BankListener;
 import com.example.root.atmdata.util.MyConstants;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements ValueEventListener,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
@@ -41,7 +50,10 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
 
     /**
      * todo move google api client implementation here, delegate location updates to fragment
+     * as found in
+     * https://developer.android.com/training/location/retrieve-current.html
      */
+    GoogleApiClient apiClient;
 
 
     private static final String TAG = "MainActivity";
@@ -76,6 +88,15 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         navigationView.setNavigationItemSelectedListener(this);
         // default selection for navigation
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
+
+        // init api client
+        // but before client initialization request permission for location
+        // check self permission
+        // ContextCompat.checkSelfPermission()
+        // if true proceed to init api client
+        // if false ask for permission
+        // ActivityCompat.requestPermissions();
+        // read more -> https://developer.android.com/training/permissions/requesting.html
     }
 
 
@@ -89,6 +110,31 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        // called when google's api client is connected
+        // you can either request last know location -> https://developer.android.com/training/location/retrieve-current.html#last-known
+        // or register for location updates -> https://developer.android.com/training/location/receive-location-updates.html#updates
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // do nothing
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // do nothing
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        // recieve location updates from here, if you've registered for location updates,
+        // send update to respective fragment, we will only have to listen for updates in map
+        // e.g.
+        // bankListener.onLocationUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
     @Override
@@ -107,20 +153,17 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
             bank.setOpeningHours((String) snapshot.child(MyConstants.KEY_OPENING_HOURS)
                     .getValue());
             bank.setUrl((String) snapshot.child(MyConstants.KEY_URL).getValue());
-            Log.e(TAG, "onDataChange: "+bank.getName() );
+            Log.e(TAG, "onDataChange: " + bank.getName());
 
             List<Atm> atmList = new ArrayList<>();
             // looping for atm 0, 1, 2 ...
             for (DataSnapshot atmSnapshot : snapshot.child(MyConstants.KEY_ATM_LIST).getChildren()) {
-                Log.e(TAG, "onDataChange: "+atmSnapshot.toString() );
+                Log.e(TAG, "onDataChange: " + atmSnapshot.toString());
                 Atm atm = new Atm();
                 String location = atmSnapshot.child(MyConstants.KEY_LOCATION).getValue().toString();
                 atm.setLatitude(Double.parseDouble(location.split(",")[0]));
                 atm.setLongitude(Double.parseDouble(location.split(",")[1]));
-               atm.setStatus((String)atmSnapshot.child(MyConstants.KEY_STATUS).getValue());
-//                if (snapshot.child(MyConstants.KEY_STATUS) != null && snapshot.child(MyConstants.KEY_STATUS).getValue() != null)
-//                    atm.setStatus((snapshot.child(MyConstants.KEY_STATUS).getValue().toString()));
-                //Log.e(TAG, "onDataChange: "+snapshot.child(MyConstants.KEY_STATUS).getValue().toString());
+                atm.setStatus((String) atmSnapshot.child(MyConstants.KEY_STATUS).getValue());
                 atm.setReference(atmSnapshot.getRef().toString());
                 atmList.add(atm);
             }
@@ -139,10 +182,8 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         item.setChecked(true);
-        // todo add check if fragment exists
         switch (item.getItemId()) {
             case R.id.navigation_bank:
-
                 bankListener = BankListFragment.newInstance(bankList);
                 break;
             case R.id.navigation_map:
