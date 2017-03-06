@@ -1,15 +1,24 @@
 package com.example.root.atmdata.ui;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,6 +33,8 @@ import com.example.root.atmdata.util.MyConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +47,7 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity implements ValueEventListener,
         NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
@@ -47,13 +58,17 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
     private BankListener bankListener;
     private FirebaseDatabase database;
     private DatabaseReference bankReference;
+    LocationManager lm;
+
 
     /**
      * todo move google api client implementation here, delegate location updates to fragment
      * as found in
      * https://developer.android.com/training/location/retrieve-current.html
      */
-    GoogleApiClient apiClient;
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    LocationRequest mLocationRequest;
 
 
     private static final String TAG = "MainActivity";
@@ -83,11 +98,47 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         bankReference = database.getReference(Bank.EXTRA_KEY);
         bankReference.addValueEventListener(this);
 
+
         // initialize navigation
 
         navigationView.setNavigationItemSelectedListener(this);
         // default selection for navigation
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        Log.e(TAG, "onCreate: ");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+            return;
+        } else {
+
+            // 2) check if GPS is enabled, not necessary but increases accuracy
+            // if not, activate
+            lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                //enable loation
+                AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle("Activate GPS")
+                        .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent);
+                            }
+                        }).setMessage("Please activate GPS");
+                builder.create().show();
+            } else {
+                // call 3) google api, get location
+                mGoogleApiClient = new GoogleApiClient.Builder(this)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .addApi(LocationServices.API).
+                                build();
+            }
+        }
+
 
         // init api client
         // but before client initialization request permission for location
@@ -99,6 +150,22 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         // read more -> https://developer.android.com/training/permissions/requesting.html
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mGoogleApiClient != null) {
+            Log.e(TAG, "onStart: not null" );
+            mGoogleApiClient.connect();
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -112,11 +179,80 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
+
+    // called when google's api client is connected
+    // you can either request last know location -> https://developer.android.com/training/location/retrieve-current.html#last-known
+    // or register for location updates -> https://developer.android.com/training/location/receive-location-updates.html#updates
+
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        // called when google's api client is connected
-        // you can either request last know location -> https://developer.android.com/training/location/retrieve-current.html#last-known
-        // or register for location updates -> https://developer.android.com/training/location/receive-location-updates.html#updates
+
+        try {
+            Log.e(TAG, "onConnected:");
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+            if (location != null) {
+                Log.e(TAG, "onConnected:2");
+                // Getting latitude of the current location
+                double latitude = location.getLatitude();
+
+                // Getting longitude of the current location
+                double longitude = location.getLongitude();
+
+                // Creating a LatLng object for the current location
+                LatLng latLng = new LatLng(latitude, longitude);
+                Log.e(TAG, "onConnected: " + latitude);
+                Log.e(TAG, "onConnected: rumi");
+
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+        startLocationUpdates();
+    }
+
+    protected void startLocationUpdates() {
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(10 * 1000)
+                .setFastestInterval(2000);
+        // Request location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.e(TAG, "onRequestPermissionsResult: " );
+        if (requestCode == 100) {
+            for (int i = 0; i < grantResults.length; i++) {
+                if (i == PermissionChecker.PERMISSION_DENIED) {
+                    // re request for permission
+                    // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    // Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+                    //
+                }
+            }
+
+            // check if GPS is activated
+
+
+
+        }
     }
 
     @Override
@@ -137,6 +273,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         // bankListener.onLocationUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
+
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         // reset bank
@@ -153,12 +290,10 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
             bank.setOpeningHours((String) snapshot.child(MyConstants.KEY_OPENING_HOURS)
                     .getValue());
             bank.setUrl((String) snapshot.child(MyConstants.KEY_URL).getValue());
-            Log.e(TAG, "onDataChange: " + bank.getName());
 
             List<Atm> atmList = new ArrayList<>();
             // looping for atm 0, 1, 2 ...
             for (DataSnapshot atmSnapshot : snapshot.child(MyConstants.KEY_ATM_LIST).getChildren()) {
-                Log.e(TAG, "onDataChange: " + atmSnapshot.toString());
                 Atm atm = new Atm();
                 String location = atmSnapshot.child(MyConstants.KEY_LOCATION).getValue().toString();
                 atm.setLatitude(Double.parseDouble(location.split(",")[0]));

@@ -230,7 +230,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
                             MarkerOptions options = new MarkerOptions();
                             // if atm is open AZURE
                             if (atm.getStatus() != null) {
-                                Log.e(TAG, "plotAtmList: " + atm.getStatus());
                                 options.icon((atm.getStatus().equalsIgnoreCase("true")) ?
                                         BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE) :
                                         BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
@@ -297,7 +296,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
             Atm atm = bankMap.get(marker.getId()).atm;
             Bank bank = bankMap.get(marker.getId()).bank;
-            Log.e(TAG, "getInfoContents: " + atm.getStatus().equalsIgnoreCase("true"));
             status.setText("Status: " + (atm.getStatus().equalsIgnoreCase("true") ? "Open" : "Close"));
             atmName.setText(bank.getName() + " ATM");
             //TODO: show updated time;
