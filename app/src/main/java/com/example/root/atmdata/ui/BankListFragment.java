@@ -182,7 +182,7 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
         Log.e(TAG, "filter: " + text);
         List<Bank> temp = new ArrayList();
         for (Bank d : bankList) {
-            if (d.getName().contains(text)) {
+            if (d.getName().toLowerCase().contains(text.toLowerCase())) {
                 temp.add(d);
                 Log.e("TAG", "filter: " + temp.toString());
             }

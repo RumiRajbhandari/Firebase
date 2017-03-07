@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
@@ -29,6 +30,7 @@ import com.example.root.atmdata.R;
 import com.example.root.atmdata.base.BaseFragment;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
+import com.example.root.atmdata.model.MyItem;
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +42,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,6 +57,8 @@ import java.util.List;
 public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnInfoWindowClickListener {
 
     private static final String TAG = "MapFragment";
+
+    private ClusterManager<MyItem> myClusterManager;
 
     private List<Bank> bankList;
     private List<Marker> markerList;
@@ -185,7 +190,22 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         options.position(latLng);
         options.snippet("Your location");
         userLocation = googleMap.addMarker(options);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+       // googleMap.moveCamera(CameraUpdateFactory.zoomTo(10));
+
+
+
+        // Enable Zoom UI Controls
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+
+        /*** Listeners ***/
+
+        // Add Listener, when user change camera
+        // googleMap.setOnCameraChangeListener(getCameraChangeListener());
+
+        /*** Listeners ***/
+
+        setUpClustering();
     }
 
     void plotAtmList(List<Bank> bankList) {
@@ -315,5 +335,36 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
     private class BankAtmMarkerMetadata {
         Bank bank;
         Atm atm;
+    }
+
+    private void setUpClustering(){
+       // googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
+        // Initialize the manager with the context and the map.
+        // (Activity extends context, so we can pass 'this' in the constructor.)
+        myClusterManager = new ClusterManager<MyItem>(getContext(), googleMap);
+
+        // Point the map's listeners at the listeners implemented by the cluster
+        // manager.
+        googleMap.setOnCameraIdleListener(myClusterManager);
+        googleMap.setOnMarkerClickListener(myClusterManager);
+
+        // Add cluster items (markers) to the cluster manager.
+        addItems();
+    }
+    private void addItems() {
+
+        // Set some lat/lng coordinates to start with.
+        double lat = 51.5145160;
+        double lng = -0.1270060;
+
+        // Add ten cluster items in close proximity, for purposes of this example.
+        for (int i = 0; i < 10; i++) {
+            double offset = i / 60d;
+            lat = lat + offset;
+            lng = lng + offset;
+            MyItem offsetItem = new MyItem(lat, lng);
+            myClusterManager.addItem(offsetItem);
+            myClusterManager.setAnimation(false);
+        }
     }
 }

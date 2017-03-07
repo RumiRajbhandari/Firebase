@@ -239,6 +239,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         // send update to respective fragment, we will only have to listen for updates in map
         // e.g.
         lastLocation = location;
+        Log.e(TAG, "onLocationChanged: "+location );
         bankListener.onLocationUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
