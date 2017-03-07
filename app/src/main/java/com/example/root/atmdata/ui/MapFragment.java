@@ -214,6 +214,12 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
     @Override
     public void onLocationUpdate(LatLng latLng) {
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+       Marker marker = googleMap.addMarker(options);
+        Log.e(TAG, "onLocationUpdate: marker" );
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
+
         // get user location here
         // add camera changes here if necessary
     }

@@ -187,7 +187,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        startLocationUpdates();
         try {
             Log.e(TAG, "onConnected:");
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -202,14 +202,13 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
 
                 // Creating a LatLng object for the current location
                 LatLng latLng = new LatLng(latitude, longitude);
-                Log.e(TAG, "onConnected: " + latitude);
-                Log.e(TAG, "onConnected: rumi");
+                onLocationChanged(location);
 
             }
         } catch (SecurityException e) {
             e.printStackTrace();
         }
-        startLocationUpdates();
+
     }
 
     protected void startLocationUpdates() {
@@ -217,20 +216,23 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)
-                .setFastestInterval(2000);
+                .setFastestInterval(1*1000);
+
+        Location location = null;
         // Request location updates
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, this);
+        /*TODO!! INSERT CODE TO PROMPT USER TO GIVE PERMISSION*/
+            Log.e(TAG, "startLocationUpdates: 1" );
+
+        } else {
+//            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            Log.e(TAG, "startLocationUpdates: 2" );
+            mLastLocation = location;
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,this);
+
+        }
 
     }
 
@@ -270,7 +272,7 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         // recieve location updates from here, if you've registered for location updates,
         // send update to respective fragment, we will only have to listen for updates in map
         // e.g.
-        // bankListener.onLocationUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
+         bankListener.onLocationUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
 
