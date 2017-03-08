@@ -43,7 +43,7 @@
             android:layout_toEndOf="@+id/imageView"
             android:layout_toRightOf="@+id/imageView"
             android:hint="Bank Phone"
-            android:paddingBottom="5dp"
+            android:paddingBottom="10dp"
             android:text="@{bank.phone}" />
 
         <ImageView

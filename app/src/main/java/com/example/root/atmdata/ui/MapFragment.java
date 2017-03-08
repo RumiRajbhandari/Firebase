@@ -30,7 +30,6 @@ import com.example.root.atmdata.R;
 import com.example.root.atmdata.base.BaseFragment;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
-import com.example.root.atmdata.model.MyItem;
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -58,7 +57,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
 
     private static final String TAG = "MapFragment";
 
-    private ClusterManager<MyItem> myClusterManager;
+    private ClusterManager<Atm> myClusterManager;
 
     private List<Bank> bankList;
     private List<Marker> markerList;
@@ -205,7 +204,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
 
         /*** Listeners ***/
 
-        setUpClustering();
+        setUpClustering(latLng);
     }
 
     void plotAtmList(List<Bank> bankList) {
@@ -337,11 +336,11 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         Atm atm;
     }
 
-    private void setUpClustering(){
+    private void setUpClustering(LatLng latLng){
        // googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
-        myClusterManager = new ClusterManager<MyItem>(getContext(), googleMap);
+        myClusterManager = new ClusterManager<Atm>(getContext(), googleMap);
 
         // Point the map's listeners at the listeners implemented by the cluster
         // manager.
@@ -352,19 +351,29 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         addItems();
     }
     private void addItems() {
-
-        // Set some lat/lng coordinates to start with.
         double lat = 51.5145160;
         double lng = -0.1270060;
 
+
+
         // Add ten cluster items in close proximity, for purposes of this example.
-        for (int i = 0; i < 10; i++) {
+      /*  for (int i = 0; i < 10; i++) {
             double offset = i / 60d;
             lat = lat + offset;
             lng = lng + offset;
-            MyItem offsetItem = new MyItem(lat, lng);
+            Atm offsetItem = new Atm(lat, lng);
             myClusterManager.addItem(offsetItem);
             myClusterManager.setAnimation(false);
+        }*/
+
+
+        for(Bank bank:bankList){
+            for(Atm atm:bank.getAtmList()){
+                myClusterManager.addItem(atm);
+                myClusterManager.setAnimation(false);
+            }
         }
-    }
-}
+
+
+
+}}
