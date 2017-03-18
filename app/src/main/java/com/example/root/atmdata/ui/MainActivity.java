@@ -94,7 +94,6 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         navigationView.setNavigationItemSelectedListener(this);
         // default selection for navigation
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
-        Log.e(TAG, "onCreate: ");
 
         if (isLocationPermissionGranted()) initApiClient();
         else requestForPermission();
@@ -239,7 +238,6 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         // send update to respective fragment, we will only have to listen for updates in map
         // e.g.
         lastLocation = location;
-        Log.e(TAG, "onLocationChanged: "+location );
         bankListener.onLocationUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
@@ -295,9 +293,11 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
                 bankListener = BankListFragment.newInstance(bankList);
                 break;
             case R.id.navigation_map:
-                bankListener = MapFragment.newInstance(bankList, lastLocation == null ? null :
-                        new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
-                break;
+                    bankListener = MapFragment.newInstance(bankList, lastLocation == null ? null :
+                            new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
+                    break;
+
+
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, bankListener.getFragment()).commit();

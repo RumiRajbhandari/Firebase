@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.example.root.atmdata.base.BaseActivity;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -43,6 +44,8 @@ public class AtmDetails extends BaseActivity {
     private Bank bank;
     private TextView bankName, phone, email, openingHour, headOffice;
     private ImageView image;
+    private double lat,lon;
+    private LatLng latLng;
 
 
     @Override
@@ -86,6 +89,11 @@ public class AtmDetails extends BaseActivity {
                             .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                     options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
                     googleMap.addMarker(options);
+                    lat=27.6884306;
+                    lon=85.3394647;
+                    latLng=new LatLng(lat,lon);
+
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
                 }
             }
         });

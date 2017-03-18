@@ -130,7 +130,7 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        search = (EditText) this.getActivity().findViewById(R.id.search);
+        search = (EditText) getView().findViewById(R.id.search);
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -166,7 +166,6 @@ public class BankListFragment extends BaseFragment implements OnBankListChangedL
         ItemTouchHelper.Callback callback = new SimplerItemTouchHelperCallback(adapter);
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(binding.recyclerView);
-        // great work here Rumi :)
 
     }
 

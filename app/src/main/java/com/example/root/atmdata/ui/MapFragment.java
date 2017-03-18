@@ -205,6 +205,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         /*** Listeners ***/
 
         setUpClustering(latLng);
+//        Log.e(TAG, "onLocationUpdate: "+latLng );
     }
 
     void plotAtmList(List<Bank> bankList) {
@@ -238,7 +239,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         final BankAtmMarkerMetadata metadata = bankMap.get(marker.getId());
         // start dialog here
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Please chose an action");
+        builder.setTitle("Please chose an action")
+        ;
         builder.setPositiveButton("ATM Details", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -320,7 +322,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
                 status.setText("Status: " + (atm.getStatus().equalsIgnoreCase("true") ? "Open" : "Close"));
                 atmName.setText(bank.getName() + " ATM");
                 //TODO: show updated time;
-//            updatedTime.setText("Updated Time: "+atm.get);
+            updatedTime.setText("Updated Time: 3 pm 2017/March/02");
                 return markerView;
             }
             // return default window
@@ -348,13 +350,11 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         googleMap.setOnMarkerClickListener(myClusterManager);
 
         // Add cluster items (markers) to the cluster manager.
-        addItems();
+        addItems(latLng);
     }
-    private void addItems() {
-        double lat = 51.5145160;
-        double lng = -0.1270060;
-
-
+    private void addItems(LatLng latLng) {
+        double lat = latLng.latitude;
+        double lng = latLng.longitude;
 
         // Add ten cluster items in close proximity, for purposes of this example.
       /*  for (int i = 0; i < 10; i++) {
