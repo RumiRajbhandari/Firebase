@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,13 +89,14 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         DatabaseReference bankReference = database.getReference(Bank.EXTRA_KEY);
         bankReference.addValueEventListener(this);
 
-
         // initialize navigation
-
         navigationView.setNavigationItemSelectedListener(this);
         // default selection for navigation
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
-        Log.e(TAG, "onCreate: ");
+
+        // restore bank list instance
+        if (savedInstanceState != null)
+            bankList = (List<Bank>) savedInstanceState.getSerializable(Bank.EXTRA_KEY);
 
         if (isLocationPermissionGranted()) initApiClient();
         else requestForPermission();
@@ -239,7 +241,6 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
         // send update to respective fragment, we will only have to listen for updates in map
         // e.g.
         lastLocation = location;
-        Log.e(TAG, "onLocationChanged: "+location );
         bankListener.onLocationUpdate(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
@@ -303,5 +304,11 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
                 .replace(R.id.container, bankListener.getFragment()).commit();
         drawerLayout.closeDrawer(Gravity.START);
         return false;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(Bank.EXTRA_KEY, (Serializable) bankList);
     }
 }

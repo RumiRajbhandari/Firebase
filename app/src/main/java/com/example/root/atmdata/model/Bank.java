@@ -12,7 +12,6 @@ public class Bank implements Serializable {
 
     public static final String EXTRA_KEY = "bank";
 
-
     private String name;
     private String address;
     private String email;
