@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by root on 2/5/17.
  */
 
-public class Atm implements Serializable,ClusterItem {
+public class Atm implements Serializable, ClusterItem {
 
     // assign default values to latitude, longitude
     private Double latitude = Double.MIN_NORMAL;
@@ -18,11 +18,11 @@ public class Atm implements Serializable,ClusterItem {
     private String reference;
 
     public Atm() {
-
     }
-    public Atm(Double latitude,Double longitude){
-        this.latitude=latitude;
-        this.longitude=longitude;
+
+    public Atm(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public Atm(Double latitude, Double longitude, String status) {
@@ -30,7 +30,6 @@ public class Atm implements Serializable,ClusterItem {
         this.longitude = longitude;
         this.status = status;
     }
-
 
 
     public String getReference() {
@@ -77,7 +76,7 @@ public class Atm implements Serializable,ClusterItem {
 
     @Override
     public LatLng getPosition() {
-        return new LatLng(latitude,longitude);
+        return new LatLng(latitude, longitude);
     }
 
     @Override

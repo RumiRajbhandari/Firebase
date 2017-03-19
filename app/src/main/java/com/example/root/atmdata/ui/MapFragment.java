@@ -1,19 +1,13 @@
 package com.example.root.atmdata.ui;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +17,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.root.atmdata.AtmDetails;
 import com.example.root.atmdata.R;
@@ -37,11 +30,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.ClusterManager.OnClusterClickListener;
+import com.google.maps.android.clustering.ClusterManager.OnClusterInfoWindowClickListener;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -57,7 +54,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
 
     private static final String TAG = "MapFragment";
 
-    private ClusterManager<Atm> myClusterManager;
+    private ClusterManager<BankAtmMarkerMetadata> myClusterManager;
 
     private List<Bank> bankList;
     private List<Marker> markerList;
@@ -104,7 +101,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         this.googleMap = googleMap;
         googleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(LayoutInflater.from(getContext())));
         googleMap.setOnInfoWindowClickListener(this);
-        plotAtmList(bankList);
+        setupClustering(createMetadataList(bankList));
         if (latLng != null) onLocationUpdate(latLng);
     }
 
@@ -189,48 +186,23 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         options.position(latLng);
         options.snippet("Your location");
         userLocation = googleMap.addMarker(options);
-         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
-       // googleMap.moveCamera(CameraUpdateFactory.zoomTo(10));
-
-
-
-        // Enable Zoom UI Controls
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
-
-        /*** Listeners ***/
-
-        // Add Listener, when user change camera
-        // googleMap.setOnCameraChangeListener(getCameraChangeListener());
-
-        /*** Listeners ***/
-
-        setUpClustering(latLng);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
     }
 
-    void plotAtmList(List<Bank> bankList) {
-        Log.d(TAG, "plotAtmList() called with: bankList = [" + bankList + "]");
+    private List<BankAtmMarkerMetadata> createMetadataList(List<Bank> bankList) {
+        Log.d(TAG, "createMetadataList() called with: bankList = [" + bankList + "]");
         // initial check
-        if (bankList.isEmpty()) return;
+        List<BankAtmMarkerMetadata> metadataList = new ArrayList<>();
         // remove markers if there
         for (final Bank bank : bankList) {
-            if (bank.getAtmList() == null && bank.getAtmList().isEmpty()) return;
+            if (bank.getAtmList() == null && bank.getAtmList().isEmpty()) continue;
             for (Atm atm : bank.getAtmList()) {
-                if (atm.getLatitude() == Double.MIN_NORMAL) return;
-                MarkerOptions options = new MarkerOptions();
-                // if atm is open AZURE
-                if (atm.getStatus() == null) return;
-                options.icon((atm.getStatus().equalsIgnoreCase("true")) ?
-                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE) :
-                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
-                Marker marker = googleMap.addMarker(options);
-                BankAtmMarkerMetadata metadata = new BankAtmMarkerMetadata();
-                metadata.bank = bank;
-                metadata.atm = atm;
-                bankMap.put(marker.getId(), metadata);
-                markerList.add(marker);
+                if (atm.getLatitude() == Double.MIN_NORMAL) continue;
+                if (atm.getStatus() == null) continue;
+                metadataList.add(new BankAtmMarkerMetadata(bank, atm));
             }
         }
+        return metadataList;
     }
 
     @Override
@@ -277,7 +249,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
     @Override
     public void refreshData(List<Bank> bankList) {
         // Remove all markers and plot new markers
-        plotAtmList(bankList);
+        setupClustering(createMetadataList(bankList));
     }
 
     private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -331,49 +303,77 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
     /**
      * used to store bank and atm meta data for respective marker
      */
-    private class BankAtmMarkerMetadata {
+    private class BankAtmMarkerMetadata implements ClusterItem {
+
         Bank bank;
         Atm atm;
+
+        public BankAtmMarkerMetadata(Bank bank, Atm atm) {
+            this.bank = bank;
+            this.atm = atm;
+        }
+
+        @Override
+        public LatLng getPosition() {
+            return new LatLng(atm.getLatitude(), atm.getLongitude());
+        }
+
+        @Override
+        public String getTitle() {
+            // return null as we are to use a custom info window
+            return null;
+        }
+
+        @Override
+        public String getSnippet() {
+            // return null as we are to use a custom info window
+            return null;
+        }
     }
 
-    private void setUpClustering(LatLng latLng){
-       // googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
+    private void setupClustering(List<BankAtmMarkerMetadata> metadataList) {
+        // googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
-        myClusterManager = new ClusterManager<Atm>(getContext(), googleMap);
+        myClusterManager = new ClusterManager<>(getContext(), googleMap);
+        if(metadataList != null)
+        myClusterManager.addItems(metadataList);
+
+        myClusterManager.setOnClusterInfoWindowClickListener(new OnClusterInfoWindowClickListener<BankAtmMarkerMetadata>() {
+            @Override
+            public void onClusterInfoWindowClick(Cluster<BankAtmMarkerMetadata> cluster) {
+
+            }
+        });
+
+        myClusterManager.setRenderer(new DefaultClusterRenderer<BankAtmMarkerMetadata>(getContext(), googleMap, myClusterManager) {
+
+            @Override
+            protected void onBeforeClusterItemRendered(BankAtmMarkerMetadata item, MarkerOptions markerOptions) {
+                super.onBeforeClusterItemRendered(item, markerOptions);
+//                options.icon((atm.getStatus().equalsIgnoreCase("true")) ?
+//                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE) :
+//                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+//                options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
+//                Marker marker = googleMap.addMarker(options);
+//                BankAtmMarkerMetadata metadata = new BankAtmMarkerMetadata();
+//                metadata.bank = bank;
+//                metadata.atm = atm;
+//                bankMap.put(marker.getId(), metadata);
+//                markerList.add(marker);
+            }
+        });
+
+        myClusterManager.getClusterMarkerCollection()
+                .setOnInfoWindowAdapter(new CustomInfoWindowAdapter(LayoutInflater.from(getContext())));
+//        myClusterManager.getMarkerCollection()
+//                .setOnInfoWindowAdapter(new CustomInfoWindowAdapter(LayoutInflater.from(getContext())));
 
         // Point the map's listeners at the listeners implemented by the cluster
         // manager.
         googleMap.setOnCameraIdleListener(myClusterManager);
-        googleMap.setOnMarkerClickListener(myClusterManager);
 
-        // Add cluster items (markers) to the cluster manager.
-        addItems();
+
     }
-    private void addItems() {
-        double lat = 51.5145160;
-        double lng = -0.1270060;
 
-
-
-        // Add ten cluster items in close proximity, for purposes of this example.
-      /*  for (int i = 0; i < 10; i++) {
-            double offset = i / 60d;
-            lat = lat + offset;
-            lng = lng + offset;
-            Atm offsetItem = new Atm(lat, lng);
-            myClusterManager.addItem(offsetItem);
-            myClusterManager.setAnimation(false);
-        }*/
-
-
-        for(Bank bank:bankList){
-            for(Atm atm:bank.getAtmList()){
-                myClusterManager.addItem(atm);
-                myClusterManager.setAnimation(false);
-            }
-        }
-
-
-
-}}
+}
