@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import com.example.root.atmdata.base.BaseActivity;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
+import com.example.root.atmdata.ui.MapFragment;
 import com.example.root.atmdata.ui.ScrollCompatibleMapFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,13 +36,22 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.squareup.picasso.Picasso;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by root on 2/13/17.
  */
-public class AtmDetails extends BaseActivity {
+public class AtmDetails extends BaseActivity implements GoogleMap.OnInfoWindowClickListener {
 
     private ScrollView container;
     private TextView bankName, phone, email, openingHour, headOffice;
@@ -92,23 +103,14 @@ public class AtmDetails extends BaseActivity {
             }
         });
 
-        // todo add map clustering here as well
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                for (Atm atm : bank.getAtmList()) {
-                    MarkerOptions options = new MarkerOptions();
-                    options.title(bank.getName() + " atm");
-                    // todo add marker color according to atm status
-                    options.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                    options.position(new LatLng(atm.getLatitude(), atm.getLongitude()));
-                    googleMap.addMarker(options);
-                    lat = 27.6884306;
-                    lon = 85.3394647;
-                    latLng = new LatLng(lat, lon);
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
-                }
+                lat = 27.6884306;
+                lon = 85.3394647;
+                latLng = new LatLng(lat, lon);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+                setupClustering(bank.getAtmList(),googleMap);
             }
         });
     }
@@ -131,6 +133,44 @@ public class AtmDetails extends BaseActivity {
         email.putExtra(Intent.EXTRA_EMAIL, new String[]{to});
         email.setType("message/rfc822");
         startActivity(Intent.createChooser(email, "Choose an Email client :"));
+    }
+
+    private void setupClustering(List<Atm> metadataList,GoogleMap googleMap) {
+
+        // add preconditions
+        if ((metadataList == null || metadataList.isEmpty()) && googleMap == null) return;
+
+        // Initialize the manager with the context and the map.
+        ClusterManager<Atm> clusterManager = new ClusterManager<>(this, googleMap);
+        clusterManager.addItems(metadataList);
+        clusterManager.getClusterMarkerCollection().setOnInfoWindowClickListener(this);
+        clusterManager.setRenderer(new DefaultClusterRenderer<Atm>(this,
+                googleMap, clusterManager) {
+
+            @Override
+            protected void onBeforeClusterItemRendered(Atm item, MarkerOptions markerOptions) {
+                super.onBeforeClusterItemRendered(item, markerOptions);
+                // add in code to change marker bitmap color, something like this
+                markerOptions.icon(item.getStatus().equalsIgnoreCase("true") ?
+                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE) :
+                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+                );
+            }
+
+            @Override
+            protected void onClusterItemRendered(Atm clusterItem, Marker marker) {
+                super.onClusterItemRendered(clusterItem, marker);
+
+            }
+        });
+
+        googleMap.setOnCameraIdleListener(clusterManager);
+    }
+
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
     }
 }
 

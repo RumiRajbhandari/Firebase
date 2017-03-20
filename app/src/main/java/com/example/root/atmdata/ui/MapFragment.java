@@ -66,9 +66,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
     private SharedPreferences sharedPreferences;
     private Marker userLocation;
 
-    /**
-     * todo if there's time implement marker clustering -> https://developers.google.com/maps/documentation/android-api/utility/marker-clustering
-     */
 
     public static MapFragment newInstance(List<Bank> bankList, LatLng latLng) {
         Log.d(TAG, "newInstance() called with: bankList = [" + bankList + "], latLng = [" + latLng + "]");
@@ -182,7 +179,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
         if (userLocation != null) userLocation.remove();
         MarkerOptions options = new MarkerOptions();
         options.position(latLng);
-        options.snippet("Your location");
+        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        options.title("Your location");
         userLocation = googleMap.addMarker(options);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
     }
@@ -347,7 +345,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
                 // add in code to change marker bitmap color, something like this
                 markerOptions.icon(item.atm.getStatus().equalsIgnoreCase("true") ?
                         BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE) :
-                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)
+                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
                 );
             }
 
