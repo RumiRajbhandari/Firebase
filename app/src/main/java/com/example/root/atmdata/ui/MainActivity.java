@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 
+import com.example.root.atmdata.AboutUs;
 import com.example.root.atmdata.R;
 import com.example.root.atmdata.base.BaseActivity;
 import com.example.root.atmdata.model.Atm;
@@ -299,6 +300,11 @@ public class MainActivity extends BaseActivity implements ValueEventListener,
                 bankListener = MapFragment.newInstance(bankList, lastLocation == null ? null :
                         new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
                 break;
+            case R.id.navigation_about_us:
+                bankListener= AboutUs.newInstance();
+                break;
+
+
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, bankListener.getFragment()).commit();

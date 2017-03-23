@@ -11,11 +11,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -28,6 +32,7 @@ import android.widget.TextView;
 import com.example.root.atmdata.base.BaseActivity;
 import com.example.root.atmdata.model.Atm;
 import com.example.root.atmdata.model.Bank;
+import com.example.root.atmdata.ui.MainActivity;
 import com.example.root.atmdata.ui.MapFragment;
 import com.example.root.atmdata.ui.ScrollCompatibleMapFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,7 +58,7 @@ import static java.security.AccessController.getContext;
  */
 public class AtmDetails extends BaseActivity implements GoogleMap.OnInfoWindowClickListener {
 
-    private ScrollView container;
+    private NestedScrollView container;
     private TextView bankName, phone, email, openingHour, headOffice;
     private ImageView image;
 
@@ -73,7 +78,19 @@ public class AtmDetails extends BaseActivity implements GoogleMap.OnInfoWindowCl
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        container = (ScrollView) findViewById(R.id.container);
+        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar2);
+
+        setSupportActionBar(toolbar);
+//        toolbar.setNavigationIcon(R.drawable.common_google_signin_btn_icon_dark_normal);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
+        // Set Collapsing Toolbar layout to the screen
+        CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
+        container = (NestedScrollView) findViewById(R.id.container);
         bankName = (TextView) findViewById(R.id.bank_name);
         phone = (TextView) findViewById(R.id.phone);
         email = (TextView) findViewById(R.id.email);
@@ -83,6 +100,7 @@ public class AtmDetails extends BaseActivity implements GoogleMap.OnInfoWindowCl
 
 
         bank = (Bank) getIntent().getSerializableExtra(Bank.EXTRA_KEY);
+
 
         bankName.setText(bank.getName());
         phone.setText(bank.getPhone());
@@ -113,6 +131,15 @@ public class AtmDetails extends BaseActivity implements GoogleMap.OnInfoWindowCl
                 setupClustering(bank.getAtmList(),googleMap);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void call(View view) {

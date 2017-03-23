@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin euismod consequat diam, in ultrices massa egestas et. Vivamus ac fringilla ligula. Maecenas accumsan mi venenatis volutpat posuere. Aenean eu aliquet leo. Sed rutrum tortor ut ex pharetra, sit amet varius nisl molestie. In risus justo, suscipit et varius eget, viverra ut turpis. In dictum tortor nec mauris viverra, eget tincidunt nunc ultrices. Aenean vitae ultricies dui. Aliquam id ultricies enim, non ullamcorper sapien. Fusce porttitor hendrerit ligula quis lacinia."/>
+
+</LinearLayout>
