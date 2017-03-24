@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.root.atmdata.ui.MainActivity">
+    tools:context="com.wlit.fellowship.atmnepal.ui.MainActivity">
 
     <!-- Appears as the main content -->
     <LinearLayout
@@ -16,6 +16,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
             android:layout_height="?attr/actionBarSize"/>
 
         <FrameLayout

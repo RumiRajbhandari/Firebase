@@ -7,7 +7,7 @@
 
         <variable
             name="bank"
-            type="com.example.root.atmdata.model.Bank" />
+            type="com.wlit.fellowship.atmnepal.model.Bank" />
     </data>
 
     <RelativeLayout
@@ -22,6 +22,10 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             app:image_url="@{bank.url}"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:foregroundGravity="center_vertical"
             tools:src="@android:drawable/ic_menu_close_clear_cancel" />
 
         <TextView
@@ -33,7 +37,12 @@
             android:layout_toRightOf="@+id/imageView"
             android:hint="Name of Bank"
             android:paddingTop="10dp"
-            android:text="@{bank.name}" />
+            android:text="@{bank.name}"
+            android:textSize="16dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="50dp"/>
 
         <TextView
             android:id="@+id/phone"
@@ -44,16 +53,19 @@
             android:layout_toRightOf="@+id/imageView"
             android:hint="Bank Phone"
             android:paddingBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="50dp"
             android:text="@{bank.phone}" />
 
         <ImageView
             android:id="@+id/image"
-            android:layout_width="wrap_content"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_reorder_grey" />
+            android:src="@drawable/ic_reorder_grey"
+            android:layout_marginRight="5dp" />
 
         <View
             android:layout_width="match_parent"

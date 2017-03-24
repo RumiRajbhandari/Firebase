@@ -2,42 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/window_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="250dp"
+    android:layout_height="125dp"
     android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin">
-
+    android:background="@drawable/infowindow"
+    android:paddingBottom="8dp">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:gravity="center_horizontal"
+        android:background="@color/green"
+        android:padding="8dp">
         <TextView
             android:id="@+id/atm_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="ATM ABC" />
-
-        <TextView
-            android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Status: Open" />
+            tools:text="ATM ABC"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/updated_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Updated Time: 12.00" />
     </LinearLayout>
 
+
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Status: Open"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/updated_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Updated Time: 12.00"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"/>
     <TextView
         android:id="@+id/edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:text="Click to View More"
-        android:textStyle="italic" />
-
-
+        android:textStyle="italic"
+        android:layout_gravity="center"
+        android:textColor="@color/green"/>
 </LinearLayout>
+
