@@ -16,6 +16,7 @@ public class Atm implements Serializable, ClusterItem {
     private Double longitude = Double.MIN_NORMAL;
     private String status;
     private String reference;
+    private String updated;
 
     public Atm() {
     }
@@ -25,10 +26,11 @@ public class Atm implements Serializable, ClusterItem {
         this.longitude = longitude;
     }
 
-    public Atm(Double latitude, Double longitude, String status) {
+    public Atm(Double latitude, Double longitude, String status,String updated) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = status;
+        this.updated=updated;
     }
 
 
@@ -64,12 +66,21 @@ public class Atm implements Serializable, ClusterItem {
         this.status = status;
     }
 
+    public String getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(String updated) {
+        this.updated = updated;
+    }
+
     @Override
     public String toString() {
         return "Atm{" +
                 "latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", status=" + status +
+                ", updated=" + updated +
                 ", reference='" + reference + '\'' +
                 '}';
     }

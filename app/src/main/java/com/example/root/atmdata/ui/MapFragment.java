@@ -160,6 +160,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
                     ref.child("status").setValue(String.valueOf(switchCompact.isChecked()));
                     ref.child("status_update_time").setValue(date);
                     ref.child("updated_by").setValue(name);
+                    refreshData(bankList);
+                    Log.e(TAG, "onClick:data refresh " );
                 }
             }
         });
@@ -289,6 +291,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, OnI
                 status.setText(String.format("Status: %s", atm.getStatus().equalsIgnoreCase("true")
                         ? "Open" : "Close"));
                 atmName.setText(String.format("%s ATM", bank.getName()));
+                Log.e(TAG, "getInfoContents: "+atm.getUpdated() );
+                updatedTime.setText(String.format("Last Updated %s",atm.getUpdated()));
                 return markerView;
             }
             // return default window
