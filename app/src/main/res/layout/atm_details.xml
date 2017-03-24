@@ -33,6 +33,13 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
+            <ImageView
+                android:id="@+id/image2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@drawable/grey_background"
+                android:alpha="0.7"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar2"
@@ -69,23 +76,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="3">
+                android:weightSum="2">
 
                 <ImageView
                     android:id="@+id/img_call"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1.57"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:onClick="call"
-                    android:src="@drawable/call" />
+                    android:src="@drawable/call"
+                    android:background="@drawable/border"/>
 
                 <ImageView
                     android:id="@+id/img_email"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:onClick="email"
-                    android:src="@drawable/mail" />
+                    android:src="@drawable/mail"
+                    android:background="@drawable/border"/>
 
             </LinearLayout>
 
@@ -93,7 +106,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                android:paddingLeft="10dp"
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -118,7 +132,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Phone: "
-                    android:textSize="15dp" />
+                    android:textSize="15dp"
+                    android:paddingTop="5dp"/>
 
                 <TextView
                     android:id="@+id/phone"
@@ -131,7 +146,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -150,7 +166,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -169,14 +186,20 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
                 android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:text="Atm List"
-                android:textSize="15dp" />
+                android:textSize="18dp"
+                android:textAllCaps="true"
+                android:background="@color/green"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                android:textStyle="bold" />
 
             <fragment
                 android:id="@+id/map"
-                android:name="com.example.root.atmdata.ui.ScrollCompatibleMapFragment"
+                android:name="com.wlit.fellowship.atmnepal.ui.ScrollCompatibleMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="10dp" />

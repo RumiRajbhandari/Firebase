@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">ATM Nepal</string>
+    <string name="about">About Us</string>
     <string name="facebook_app_id">1846736068874376</string>
 
     <string name="fb_login_protocol_scheme">fb1846736068874376</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="aboutus">ATM Nepal helps users locate ATMs and remotely find out its working condition. The service condition update is user generated and helps you avoid machines that are "out of service" at the time. It also features list of all of your bank’s ATMs and their locations on google maps. The app currently only features ATMs inside the Kathmandu valley.
+
+
+</string>
 </resources>

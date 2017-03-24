@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.root.atmdata">
+    package="com.wlit.fellowship.atmnepal">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,16 +8,16 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name=".MyApplication"
+        android:name="com.wlit.fellowship.atmnepal.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
 
-        <activity android:name=".SplashActivity"
-            android:theme="@style/SplashTheme">
+        <activity android:name="com.wlit.fellowship.atmnepal.SplashActivity"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.MainActivity">
+        <activity android:name="com.wlit.fellowship.atmnepal.ui.MainActivity">
 
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AtmDetails"></activity>
+        <activity android:name="com.wlit.fellowship.atmnepal.AtmDetails"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>

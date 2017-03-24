@@ -9,7 +9,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.root.atmdata"
+        applicationId "com.wlit.fellowship.atmnepal"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
     <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
@@ -9,10 +10,11 @@
 
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
+        android:layout_marginTop="36dp"
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:padding="10dp"
-        android:text="@string/about"
+        android:text="@string/app_name"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -26,7 +28,7 @@
         android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:text="@string/aboutus"
+        android:text="/aboutus"
         android:textAlignment="center" />
 
 
@@ -45,7 +47,7 @@
         android:id="@+id/name1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mandira Bhattarai"
+        android:text="Akritee Shrestha"
         android:layout_below="@+id/developedby"
         android:textSize="18sp"
         android:paddingLeft="15dp"
@@ -56,7 +58,7 @@
         android:id="@+id/name2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nileema Shrestha"
+        android:text="Manisha Bhattarai"
         android:layout_below="@+id/name1"
         android:textSize="18sp"
         android:paddingLeft="15dp"
@@ -67,11 +69,13 @@
         android:id="@+id/name3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rumi Rajbhandari"
+        android:text="Priyanca Gyawali"
         android:textSize="18sp"
         android:layout_below="@+id/name2"
         android:paddingLeft="15dp"
         android:layout_marginBottom="5dp"
         android:paddingRight="10dp"
         />
-</LinearLayout>
+
+</RelativeLayout>
+
