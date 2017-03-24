@@ -16,8 +16,7 @@
         android:theme="@style/AppTheme">
 
 
-        <activity android:name="com.wlit.fellowship.atmnepal.SplashActivity"
-            >
+        <activity android:name="com.wlit.fellowship.atmnepal.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
